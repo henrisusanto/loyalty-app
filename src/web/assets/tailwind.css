@@ -1,0 +1,16 @@
+/* purgecss start ignore */
+@tailwind base;
+
+#root {
+  @apply bg-gray-300;
+  @apply h-screen;
+}
+
+@tailwind components;
+
+.primary-btn {
+  @apply bg-red-500 text-white font-bold py-2 px-4 rounded;
+}
+
+@tailwind utilities;
+/* purgecss end ignore */

@@ -1,0 +1,35 @@
+version: '3.1'
+services:
+
+  mysql:
+    container_name: mysql-container
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+    ports: 
+      - 3306:3306
+
+  adminer:
+    container_name: adminer-container
+    image: adminer
+    restart: always
+    ports:
+      - 8181:8080
+    depends_on:
+      - 'mysql'
+      
+  web:
+    container_name: fastro-container
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    image: 'fastro'
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+    depends_on:
+      - 'mysql'
