@@ -1,14 +1,27 @@
-import { Controller, Get } from 'fastro'
+import { Controller, Post } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientEnrollNewMember } from '../../../memberid/Core/Member/UseCase/client.enrollnewmember'
+import { ClientEnrollNewMember } from '../../../domain/Core/Member/UseCase/client.enrollnewmember'
+import { MemberRepository } from '../../../repository/member.repository'
 
 @Controller({ prefix: 'api/member' })
 export class MemberController {
-  @Get({ url: '/me' })
+  @Post({ url: '/enroll' })
   async me (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
-  	const usecase = new ClientEnrollNewMember()
-  	const result = await usecase.execute()
-    reply.sendOk(result)
+  	try {
+	  	const payload = JSON.parse(request.body)
+	  	const memberRepo = new MemberRepository()
+	  	const useCase = new ClientEnrollNewMember(memberRepo)
+	  	const result = await useCase.execute(
+	  		payload.name,
+	  		payload.email,
+	  		payload.phone,
+	  		payload.register_date,
+	  		payload.date_of_birth
+	  	)
+	    reply.sendOk(result)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
   }
 }
