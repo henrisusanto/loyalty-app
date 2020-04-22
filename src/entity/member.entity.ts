@@ -16,7 +16,7 @@ export class Member {
 	  @Column()
 	  FullName?: string
 
-	  @Column()
+	  @Column({unique: true})
 	  Email: string
 
 	  @Column()

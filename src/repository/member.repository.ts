@@ -23,7 +23,13 @@ export class MemberRepository implements MemberRepositoryInterface {
 
     public async save (domainEntity: MemberEntity) {
     		const dbEntity = this.mapToDatabase(domainEntity)
-    		this.repo.save(dbEntity)
+    		return this.repo.save(dbEntity)
+    		.then(saved => {
+    			return saved
+    		})
+    		.catch (e => {
+    			throw new Error (e)
+    		})
     }
 
     public mapToDomain (data) {
