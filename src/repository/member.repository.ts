@@ -1,5 +1,6 @@
 'use strict'
 import { Member } from '../entity/member.entity'
+import { PKGen } from '../entity/pkgen.entity'
 import { MemberRepositoryInterface } from '../domain/Core/Member/RepositoryInterface/member.repository.interface'
 import { MemberEntity } from '../domain/Core/Member/Entity/member.entity'
 const typeorm = require('typeorm')
@@ -14,6 +15,12 @@ export class MemberRepository implements MemberRepositoryInterface {
         this.repo = this.conn.getRepository(Member)
     }
 
+    public async create (domainEntity: MemberEntity) {
+    	const generated = await this.conn.getRepository(PKGen).save({})
+    	domainEntity.setId(generated.id)
+    	this.conn.getRepository(PKGen).delete(generated.id)
+    }
+
     public async save (domainEntity: MemberEntity) {
     		const dbEntity = this.mapToDatabase(domainEntity)
     		this.repo.save(dbEntity)
@@ -24,13 +31,14 @@ export class MemberRepository implements MemberRepositoryInterface {
     	return memberDomainEntity
     }
 
-    public mapToDatabase (data: MemberEntity) {
+    public mapToDatabase (domainEntity: MemberEntity) {
     	return {
-					FullName: data.getFullName (),
-					Email: data.getEmail (),
-					PhoneNumber: data.getPhoneNumber (),
-					RegisterDate: data.getRegisterDate (),
-					DateOfBirth: data.getDateOfBirth ()
+    			id: domainEntity.getId(),
+					FullName: domainEntity.getFullName (),
+					Email: domainEntity.getEmail (),
+					PhoneNumber: domainEntity.getPhoneNumber (),
+					RegisterDate: domainEntity.getRegisterDate (),
+					DateOfBirth: domainEntity.getDateOfBirth ()
     	}
     }
 }

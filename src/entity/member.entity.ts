@@ -1,21 +1,30 @@
-import { Entity, Column, Index } from 'typeorm'
-import { BasicEntity } from 'fastro'
+import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
 
 @Entity()
 @Index(['id', 'FullName', 'Email', 'PhoneNumber', 'RegisterDate', 'DateOfBirth'])
-export class Member extends BasicEntity {
-  @Column()
-  FullName?: string
+export class Member {
 
-  @Column({ unique: true })
-  Email: string
+    @PrimaryColumn()
+    id: number;
 
-  @Column()
-  PhoneNumber?: string
+	  @CreateDateColumn()
+	  createdAt?: Date
 
-  @Column()
-  RegisterDate?: Date
+	  @UpdateDateColumn()
+	  updatedAt?: Date
 
-  @Column()
-  DateOfBirth?: Date
+	  @Column()
+	  FullName?: string
+
+	  @Column()
+	  Email: string
+
+	  @Column()
+	  PhoneNumber?: string
+
+	  @Column()
+	  RegisterDate?: Date
+
+	  @Column()
+	  DateOfBirth?: Date
 }
