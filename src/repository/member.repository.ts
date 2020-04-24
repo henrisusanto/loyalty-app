@@ -15,15 +15,16 @@ export class MemberRepository implements MemberRepositoryInterface {
         this.repo = this.conn.getRepository(Member)
     }
 
-    public async create (domainEntity: MemberEntity) {
+    public async generateId (): number {
     	const generated = await this.conn.getRepository(PKGen).save({})
-    	domainEntity.setId(generated.id)
     	this.conn.getRepository(PKGen).delete(generated.id)
+    	return generated.id
     }
 
     public async save (domainEntity: MemberEntity) {
-    		const dbEntity = this.mapToDatabase(domainEntity)
-    		return this.repo.save(dbEntity)
+    		const domainEntityJSON = domainEntity.export()
+    		const record = this.domainJSONtoPersistence(domainEntityJSON)
+    		return this.repo.save(record)
     		.then(saved => {
     			return saved
     		})
@@ -32,19 +33,55 @@ export class MemberRepository implements MemberRepositoryInterface {
     		})
     }
 
-    public mapToDomain (data) {
-    	var memberDomainEntity = new MemberEntity()
-    	return memberDomainEntity
+    public async findAll (
+			limit: number,
+			offset: number,
+			search: string,
+			searchableFields: string[],
+			sort: string,
+			sortType: string
+    ) {
+			const results = await this.repo
+		    .createQueryBuilder('member')
+		    .limit(limit)
+		    .offset(offset)
+		    .orderBy(sort, sortType)
+		    .getMany()
+		  return results.map(result => {
+		  	return this.persistenceToDomain(result)
+		  })
     }
 
-    public mapToDatabase (domainEntity: MemberEntity) {
-    	return {
-    			id: domainEntity.getId(),
-					FullName: domainEntity.getFullName (),
-					Email: domainEntity.getEmail (),
-					PhoneNumber: domainEntity.getPhoneNumber (),
-					RegisterDate: domainEntity.getRegisterDate (),
-					DateOfBirth: domainEntity.getDateOfBirth ()
-    	}
-    }
+		persistenceToDomain (data): MemberEntity {
+    	let memberDomainEntity = new MemberEntity()
+    	memberDomainEntity.import({
+				id: data.id,
+				FullName: data.FullName,
+				Email: data.Email,
+				PhoneNumber: data.PhoneNumber,
+				Status: data.Status,
+				RegisterDate: data.RegisterDate,
+				DateOfBirth: data.DateOfBirth,
+				Tier: data.Tier,
+				LifetimePoint: data.LifetimePoint,
+				YTDPoint: data.YTDPoint
+    	})
+    	return memberDomainEntity
+		}
+
+		domainJSONtoPersistence (data) {
+			return {
+				id: data.id,
+				FullName: data.FullName,
+				Email: data.Email,
+				PhoneNumber: data.PhoneNumber,
+				Status: data.Status,
+				RegisterDate: data.RegisterDate,
+				DateOfBirth: data.DateOfBirth,
+				Tier: data.Tier,
+				LifetimePoint: data.LifetimePoint,
+				YTDPoint: data.YTDPoint
+  		}
+		}
+
 }
