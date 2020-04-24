@@ -15,36 +15,40 @@ export class MemberRepository implements MemberRepositoryInterface {
         this.repo = this.conn.getRepository(Member)
     }
 
-    public async create (domainEntity: MemberEntity) {
+    public async generateId (): Promise <number> {
     	const generated = await this.conn.getRepository(PKGen).save({})
-    	domainEntity.setId(generated.id)
     	this.conn.getRepository(PKGen).delete(generated.id)
+        return generated.id
     }
 
-    public async save (domainEntity: MemberEntity) {
-    		const dbEntity = this.mapToDatabase(domainEntity)
-    		return this.repo.save(dbEntity)
-    		.then(saved => {
-    			return saved
-    		})
-    		.catch (e => {
-    			throw new Error (e)
-    		})
+    public async save (domainEntity: MemberEntity): Promise <void> {
+		const dbEntity = this.domainToPersistence(domainEntity)
+        try {
+            return this.repo.save(dbEntity)
+        } catch (e) {
+            throw new Error (e)
+        }
     }
 
-    public mapToDomain (data) {
+    private persistenceToDomain (data): MemberEntity {
     	var memberDomainEntity = new MemberEntity()
+        memberDomainEntity.importFromPersistence(data)
     	return memberDomainEntity
     }
 
-    public mapToDatabase (domainEntity: MemberEntity) {
+    private domainToPersistence (domainEntity: MemberEntity) {
+        const JSONObj = domainEntity.exportToPersistence()
     	return {
-    			id: domainEntity.getId(),
-					FullName: domainEntity.getFullName (),
-					Email: domainEntity.getEmail (),
-					PhoneNumber: domainEntity.getPhoneNumber (),
-					RegisterDate: domainEntity.getRegisterDate (),
-					DateOfBirth: domainEntity.getDateOfBirth ()
+            id: JSONObj.id,
+            FullName: JSONObj.FullName,
+            Email: JSONObj.Email,
+            PhoneNumber: JSONObj.PhoneNumber,
+            Status: JSONObj.Status,
+            RegisterDate: JSONObj.RegisterDate,
+            DateOfBirth: JSONObj.DateOfBirth,
+            Tier: JSONObj.Tier,
+            LifetimePoint: JSONObj.LifetimePoint,
+            YTDPoint: JSONObj.YTDPoint
     	}
     }
 }
