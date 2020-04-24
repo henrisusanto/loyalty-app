@@ -27,4 +27,13 @@ export class Member {
 
 	  @Column()
 	  DateOfBirth?: Date
+
+	  @Column()
+	  Status?: Boolean
+
+	  @Column()
+	  LifetimePoint?: number
+
+	  @Column()
+	  YTDPoint?: number
 }
