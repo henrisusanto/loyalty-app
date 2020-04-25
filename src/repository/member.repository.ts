@@ -38,6 +38,12 @@ export class MemberRepository implements MemberRepositoryInterface {
         })
     }
 
+    public async findOne (id: number): Promise <MemberEntity> {
+        const found = await this.repo.findOne(id)
+        if (!found) throw new Error ('Member not found')
+        return this.persistenceToDomain(found)
+    }
+
     public async generateId (): Promise <number> {
     	const generated = await this.conn.getRepository(PKGen).save({})
     	this.conn.getRepository(PKGen).delete(generated.id)

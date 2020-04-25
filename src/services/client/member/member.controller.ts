@@ -3,6 +3,7 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { ClientEnrollNewMember } from '../../../domain/Core/Member/UseCase/client.enrollnewmember.usecase'
 import { ClientGetMemberList } from '../../../domain/Core/Member/UseCase/client.getmemberlist.usecase'
+import { ClientGetMemberProfile } from '../../../domain/Core/Member/UseCase/client.getmemberprofile.usecase'
 import { MemberRepository } from '../../../repository/member.repository'
 
 @Controller({ prefix: 'api/member' })
@@ -40,6 +41,19 @@ export class MemberController {
 		    payload.sortBy,
 		    payload.sort
 	  	)
+	    reply.sendOk(result)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
+  }
+
+  @Get({ url: '/profile/:id' })
+  async profile (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	try {
+		  const id:number = request.params.id
+	  	const memberRepo = new MemberRepository()
+	  	const useCase = new ClientGetMemberProfile(memberRepo)
+	  	const result = await useCase.execute(id)
 	    reply.sendOk(result)
   	} catch (error) {
   		reply.sendError(error)
