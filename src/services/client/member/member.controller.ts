@@ -5,6 +5,8 @@ import { ClientEnrollNewMember } from '../../../domain/Core/Member/UseCase/clien
 import { ClientGetMemberList } from '../../../domain/Core/Member/UseCase/client.getmemberlist.usecase'
 import { ClientGetMemberProfile } from '../../../domain/Core/Member/UseCase/client.getmemberprofile.usecase'
 import { ClientUpdateMemberProfile } from '../../../domain/Core/Member/UseCase/client.updatememberprofile.usecase'
+import { ClientEnableMember } from '../../../domain/Core/Member/UseCase/client.enablemember.usecase'
+import { ClientDisableMember } from '../../../domain/Core/Member/UseCase/client.disablemember.usecase'
 import { MemberRepository } from '../../../repository/member.repository'
 
 @Controller({ prefix: 'api/member' })
@@ -64,17 +66,44 @@ export class MemberController {
   @Post({ url: '/profile/:id' })
   async updateProfile (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
   	try {
+  		const id: number = parseInt (request.params.id)
 	  	const payload = JSON.parse(request.body)
 	  	const memberRepo = new MemberRepository()
 	  	const useCase = new ClientUpdateMemberProfile(memberRepo)
 	  	const result = await useCase.execute(
-	  		parseInt (request.params.id),
+	  		id,
 	  		payload.name,
 	  		payload.email,
 	  		payload.phone,
 	  		payload.register_date,
 	  		payload.date_of_birth
 	  	)
+	    reply.sendOk(result)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
+  }
+
+  @Post({ url: ':id/enable' })
+  async enable (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	try {
+		  const id:number = request.params.id
+	  	const memberRepo = new MemberRepository ()
+	  	const useCase = new ClientEnableMember (memberRepo)
+	  	const result = await useCase.execute (id)
+	    reply.sendOk(result)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
+  }
+
+  @Post({ url: ':id/disable' })
+  async disable (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	try {
+		  const id:number = request.params.id
+	  	const memberRepo = new MemberRepository ()
+	  	const useCase = new ClientDisableMember (memberRepo)
+	  	const result = await useCase.execute (id)
 	    reply.sendOk(result)
   	} catch (error) {
   		reply.sendError(error)
