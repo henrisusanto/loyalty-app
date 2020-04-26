@@ -32,6 +32,9 @@ export class Member {
 	  Status?: Boolean
 
 	  @Column()
+	  Tier?: number
+
+	  @Column()
 	  LifetimePoint?: number
 
 	  @Column()

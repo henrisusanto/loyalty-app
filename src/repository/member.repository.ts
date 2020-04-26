@@ -50,10 +50,11 @@ export class MemberRepository implements MemberRepositoryInterface {
         return generated.id
     }
 
-    public async save (domainEntity: MemberEntity): Promise <void> {
+    public async save (domainEntity: MemberEntity): Promise <MemberEntity> {
 		const dbEntity = this.domainToPersistence(domainEntity)
         try {
-            return this.repo.save(dbEntity)
+            const saved = await this.repo.save (dbEntity)
+            return this.persistenceToDomain (saved)
         } catch (e) {
             throw new Error (e)
         }
