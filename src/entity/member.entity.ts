@@ -1,11 +1,11 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
 
 @Entity()
-@Index(['id', 'FullName', 'Email', 'PhoneNumber', 'RegisterDate', 'DateOfBirth'])
+@Index(['Id', 'FullName', 'Email', 'PhoneNumber', 'RegisterDate', 'DateOfBirth'])
 export class Member {
 
-    @PrimaryColumn()
-    id: number;
+    @PrimaryGeneratedColumn()
+    Id: number;
 
 	  @CreateDateColumn()
 	  createdAt?: Date

@@ -38,16 +38,10 @@ export class MemberRepository implements MemberRepositoryInterface {
         })
     }
 
-    public async findOne (id: number): Promise <MemberEntity> {
-        const found = await this.repo.findOne(id)
+    public async findOne (Id: number): Promise <MemberEntity> {
+        const found = await this.repo.findOne(Id)
         if (!found) throw new Error ('Member not found')
         return this.persistenceToDomain(found)
-    }
-
-    public async generateId (): Promise <number> {
-    	const generated = await this.conn.getRepository(PKGen).save({})
-    	this.conn.getRepository(PKGen).delete(generated.id)
-        return generated.id
     }
 
     public async save (domainEntity: MemberEntity): Promise <MemberEntity> {
@@ -69,7 +63,7 @@ export class MemberRepository implements MemberRepositoryInterface {
     private domainToPersistence (domainEntity: MemberEntity) {
         const JSONObj = domainEntity.exportToPersistence()
     	return {
-            id: JSONObj.id,
+            Id: JSONObj.Id,
             FullName: JSONObj.FullName,
             Email: JSONObj.Email,
             PhoneNumber: JSONObj.PhoneNumber,
