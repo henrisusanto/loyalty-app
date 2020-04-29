@@ -78,7 +78,11 @@ export class MemberRepository implements MemberRepositoryInterface {
             DateOfBirth: JSONObj.DateOfBirth,
             Tier: JSONObj.Tier,
             LifetimePoint: JSONObj.LifetimePoint,
-            YTDPoint: JSONObj.YTDPoint
+            YTDPoint: JSONObj.YTDPoint,
+            LifetimeVisit: JSONObj.LifetimeVisit,
+            YTDVisit: JSONObj.YTDVisit,
+            LifetimeSpending: JSONObj.LifetimeSpending,
+            YTDSpending: JSONObj.YTDSpending
     	}
     }
 }

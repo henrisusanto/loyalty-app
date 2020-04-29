@@ -39,4 +39,16 @@ export class Member {
 
 	  @Column()
 	  YTDPoint?: number
+
+	  @Column()
+	  LifetimeVisit?: number
+
+	  @Column()
+	  YTDVisit?: number
+
+	  @Column()
+	  LifetimeSpending?: number
+
+	  @Column()
+	  YTDSpending?: number
 }
