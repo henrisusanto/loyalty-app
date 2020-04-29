@@ -1,7 +1,7 @@
 'use strict'
 import { Member } from '../entity/member.entity'
 import { PKGen } from '../entity/pkgen.entity'
-import { MemberRepositoryInterface } from '../domain/Core/Member/RepositoryInterface/member.repository.interface'
+import { MemberRepositoryInterface } from '../domain/Core/Member/RepositoryInterface/member.repositoryinterface'
 import { MemberEntity } from '../domain/Core/Member/Entity/member.entity'
 const typeorm = require('typeorm')
 
