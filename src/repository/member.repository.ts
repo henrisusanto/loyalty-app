@@ -1,8 +1,7 @@
 'use strict'
 import { Member } from '../entity/member.entity'
-import { PKGen } from '../entity/pkgen.entity'
-import { MemberRepositoryInterface } from '../domain/Core/Member/RepositoryInterface/member.repositoryinterface'
-import { MemberEntity } from '../domain/Core/Member/Entity/member.entity'
+import { MemberRepositoryInterface, MemberListParameter } from '../domain/Core/Member/RepositoryInterface/member.repositoryinterface'
+import { MemberEntity, MemberJSON } from '../domain/Core/Member/Entity/member.entity'
 const typeorm = require('typeorm')
 
 export class MemberRepository implements MemberRepositoryInterface {
@@ -15,7 +14,7 @@ export class MemberRepository implements MemberRepositoryInterface {
         this.repo = this.conn.getRepository(Member)
     }
 
-    public async findAll (parameter): Promise <MemberEntity[]> {
+    public async findAll (parameter: MemberListParameter): Promise <MemberEntity[]> {
         let order = {}
         order[parameter.orderBy] = parameter.order
         var where:{}[] = []
@@ -34,18 +33,18 @@ export class MemberRepository implements MemberRepositoryInterface {
         })
 
         return results.map(result => {
-          return this.persistenceToDomain(result)
+          return this.toDomain(result)
         })
     }
 
     public async findOne (Id: number): Promise <MemberEntity> {
         const found = await this.repo.findOne(Id)
         if (!found) throw new Error ('Member not found')
-        return this.persistenceToDomain(found)
+        return this.toDomain(found)
     }
 
     public async save (domainEntity: MemberEntity): Promise <number> {
-		const dbEntity = this.domainToPersistence(domainEntity)
+		const dbEntity = this.toPersistence(domainEntity)
         try {
             const saved = await this.repo.save (dbEntity)
             return saved.Id
@@ -54,29 +53,46 @@ export class MemberRepository implements MemberRepositoryInterface {
         }
     }
 
-    private persistenceToDomain (data): MemberEntity {
+    private toDomain (data): MemberEntity {
+        const memberJSON: MemberJSON = {
+            Id: data.Id,
+            FullName: data.FullName,
+            Email: data.Email,
+            PhoneNumber: data.PhoneNumber,
+            Status: data.Status,
+            RegisterDate: data.RegisterDate,
+            DateOfBirth: data.DateOfBirth,
+            Tier: data.Tier,
+            LifetimePoint: data.LifetimePoint,
+            YTDPoint: data.YTDPoint,
+            LifetimeVisit: data.LifetimeVisit,
+            YTDVisit: data.YTDVisit,
+            LifetimeSpending: data.LifetimeSpending,
+            YTDSpending: data.YTDSpending  
+        }
+
     	var memberDomainEntity = new MemberEntity()
-        memberDomainEntity.importFromPersistence(data)
+        memberDomainEntity.fromJSON (memberJSON)
     	return memberDomainEntity
     }
 
-    private domainToPersistence (domainEntity: MemberEntity) {
-        const JSONObj = domainEntity.exportToPersistence()
+    private toPersistence (domainEntity: MemberEntity) {
+        const data: MemberJSON = domainEntity.toJSON ()
     	return {
-            Id: JSONObj.Id,
-            FullName: JSONObj.FullName,
-            Email: JSONObj.Email,
-            PhoneNumber: JSONObj.PhoneNumber,
-            Status: JSONObj.Status,
-            RegisterDate: JSONObj.RegisterDate,
-            DateOfBirth: JSONObj.DateOfBirth,
-            Tier: JSONObj.Tier,
-            LifetimePoint: JSONObj.LifetimePoint,
-            YTDPoint: JSONObj.YTDPoint,
-            LifetimeVisit: JSONObj.LifetimeVisit,
-            YTDVisit: JSONObj.YTDVisit,
-            LifetimeSpending: JSONObj.LifetimeSpending,
-            YTDSpending: JSONObj.YTDSpending
+            Id: data.Id,
+            FullName: data.FullName,
+            Email: data.Email,
+            PhoneNumber: data.PhoneNumber,
+            Status: data.Status,
+            RegisterDate: data.RegisterDate,
+            DateOfBirth: data.DateOfBirth,
+            Tier: data.Tier,
+            LifetimePoint: data.LifetimePoint,
+            YTDPoint: data.YTDPoint,
+            LifetimeVisit: data.LifetimeVisit,
+            YTDVisit: data.YTDVisit,
+            LifetimeSpending: data.LifetimeSpending,
+            YTDSpending: data.YTDSpending
     	}
     }
 }
