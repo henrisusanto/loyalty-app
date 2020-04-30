@@ -44,11 +44,11 @@ export class MemberRepository implements MemberRepositoryInterface {
         return this.persistenceToDomain(found)
     }
 
-    public async save (domainEntity: MemberEntity): Promise <MemberEntity> {
+    public async save (domainEntity: MemberEntity): Promise <number> {
 		const dbEntity = this.domainToPersistence(domainEntity)
         try {
             const saved = await this.repo.save (dbEntity)
-            return this.persistenceToDomain (saved)
+            return saved.Id
         } catch (e) {
             throw new Error (e)
         }

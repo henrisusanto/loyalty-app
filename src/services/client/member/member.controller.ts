@@ -18,14 +18,14 @@ export class MemberController {
 	  	const payload = JSON.parse(request.body)
 	  	const memberRepo = new MemberRepository()
 	  	const useCase = new ClientEnrollNewMember(memberRepo)
-	  	const result = await useCase.execute(
+	  	const Id = await useCase.execute(
 	  		payload.name,
 	  		payload.email,
 	  		payload.phone,
 	  		payload.register_date,
 	  		payload.date_of_birth
 	  	)
-	    reply.sendOk(result)
+	    reply.sendOk({Id})
   	} catch (error) {
   		reply.sendError(error)
   	}
@@ -70,7 +70,7 @@ export class MemberController {
 	  	const payload = JSON.parse(request.body)
 	  	const memberRepo = new MemberRepository()
 	  	const useCase = new ClientUpdateMemberProfile(memberRepo)
-	  	const result = await useCase.execute(
+	  	const Id = await useCase.execute(
 	  		id,
 	  		payload.name,
 	  		payload.email,
@@ -78,7 +78,7 @@ export class MemberController {
 	  		payload.register_date,
 	  		payload.date_of_birth
 	  	)
-	    reply.sendOk(result)
+	    reply.sendOk({Id})
   	} catch (error) {
   		reply.sendError(error)
   	}
@@ -90,8 +90,8 @@ export class MemberController {
 		  const id:number = request.params.id
 	  	const memberRepo = new MemberRepository ()
 	  	const useCase = new ClientEnableMember (memberRepo)
-	  	const result = await useCase.execute (id)
-	    reply.sendOk(result)
+	  	const Id = await useCase.execute (id)
+	    reply.sendOk({Id})
   	} catch (error) {
   		reply.sendError(error)
   	}
@@ -103,8 +103,8 @@ export class MemberController {
 		  const id:number = request.params.id
 	  	const memberRepo = new MemberRepository ()
 	  	const useCase = new ClientDisableMember (memberRepo)
-	  	const result = await useCase.execute (id)
-	    reply.sendOk(result)
+	  	const Id = await useCase.execute (id)
+	    reply.sendOk({Id})
   	} catch (error) {
   		reply.sendError(error)
   	}
