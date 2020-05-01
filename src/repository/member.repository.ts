@@ -4,6 +4,23 @@ import { MemberRepositoryInterface, MemberListParameter } from '../domain/Core/M
 import { MemberEntity, MemberJSON } from '../domain/Core/Member/Entity/member.entity'
 const typeorm = require('typeorm')
 
+interface MemberRecord {
+    Id: number
+    FullName: string
+    Email: string
+    PhoneNumber: string
+    Status: boolean
+    RegisterDate: Date
+    DateOfBirth: Date
+    Tier: number
+    LifetimePoint: number
+    YTDPoint: number
+    LifetimeVisit: number
+    YTDVisit: number
+    LifetimeSpending: number
+    YTDSpending: number
+}
+
 export class MemberRepository implements MemberRepositoryInterface {
 
     protected conn
@@ -76,7 +93,7 @@ export class MemberRepository implements MemberRepositoryInterface {
     	return memberDomainEntity
     }
 
-    private toPersistence (domainEntity: MemberEntity) {
+    private toPersistence (domainEntity: MemberEntity): MemberRecord {
         const data: MemberJSON = domainEntity.toJSON ()
     	return {
             Id: data.Id,
