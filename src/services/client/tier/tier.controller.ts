@@ -4,6 +4,7 @@ import { Http2ServerResponse } from 'http2'
 import { ClientSetDraftTier } from '../../../domain/Core/Tier/UseCase/client.setdrafttier.usecase'
 import { ClientGetDraftTier } from '../../../domain/Core/Tier/UseCase/client.getdrafttier.usecase'
 import { ClientGetActiveTierList } from '../../../domain/Core/Tier/UseCase/client.getactivetierlist.usecase'
+import { ClientDeleteDraftTier } from '../../../domain/Core/Tier/UseCase/client.deletedrafttier.usecase'
 import { SimpleTierJSON } from '../../../domain/Core/Tier/AggregateRoot/tier.aggregateroot'
 import { SimpleQualificationJSON } from '../../../domain/Core/Tier/ValueObject/qualification.valueobject'
 import { TierRepository } from '../../../repository/tier.repository'
@@ -79,6 +80,19 @@ export class TierController {
 	  	}
 
 	    reply.sendOk(formed)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
+  }
+
+  @Post({ url: '/draft/:year/delete' })
+  async deleteDraft (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	try {
+  		const Year = request.params.year
+	  	const tierRepo = new TierRepository ()
+	  	const useCase = new ClientDeleteDraftTier (tierRepo)
+	  	const result = await useCase.execute (Year)
+	    reply.sendOk({Year})
   	} catch (error) {
   		reply.sendError(error)
   	}
