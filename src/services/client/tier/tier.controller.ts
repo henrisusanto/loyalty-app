@@ -47,7 +47,16 @@ export class TierController {
 	  	const tierRepo = new TierRepository ()
 	  	const useCase = new ClientGetDraftTier (tierRepo)
 	  	const result = await useCase.execute (Year)
-	    reply.sendOk(result)
+
+	  	var formed = {}
+	  	for ( let r of result ) {
+	  		formed[r.Name] = {}
+	  		for ( let q of r.Qualifications ) {
+	  			formed[r.Name][q.MemberField] = q.ThresholdValue
+	  		}
+	  	}
+
+	    reply.sendOk(formed)
   	} catch (error) {
   		reply.sendError(error)
   	}
