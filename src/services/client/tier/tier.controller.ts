@@ -3,6 +3,7 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { ClientSetDraftTier } from '../../../domain/Core/Tier/UseCase/client.setdrafttier.usecase'
 import { ClientGetDraftTier } from '../../../domain/Core/Tier/UseCase/client.getdrafttier.usecase'
+import { ClientGetActiveTierList } from '../../../domain/Core/Tier/UseCase/client.getactivetierlist.usecase'
 import { SimpleTierJSON } from '../../../domain/Core/Tier/AggregateRoot/tier.aggregateroot'
 import { SimpleQualificationJSON } from '../../../domain/Core/Tier/ValueObject/qualification.valueobject'
 import { TierRepository } from '../../../repository/tier.repository'
@@ -47,6 +48,27 @@ export class TierController {
 	  	const tierRepo = new TierRepository ()
 	  	const useCase = new ClientGetDraftTier (tierRepo)
 	  	const result = await useCase.execute (Year)
+
+	  	var formed = {}
+	  	for ( let r of result ) {
+	  		formed[r.Name] = {}
+	  		for ( let q of r.Qualifications ) {
+	  			formed[r.Name][q.MemberField] = q.ThresholdValue
+	  		}
+	  	}
+
+	    reply.sendOk(formed)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
+  }
+
+  @Get({ url: '/active' })
+  async getActive (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	try {
+	  	const tierRepo = new TierRepository ()
+	  	const useCase = new ClientGetActiveTierList (tierRepo)
+	  	const result = await useCase.execute ()
 
 	  	var formed = {}
 	  	for ( let r of result ) {
