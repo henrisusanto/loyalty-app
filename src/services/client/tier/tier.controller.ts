@@ -98,4 +98,9 @@ export class TierController {
   	}
   }
 
+  @Post({ url: '/name' })
+  async updatePointName (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	reply.sendOk('kontol')
+  }
+
 }
