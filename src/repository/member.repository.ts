@@ -1,7 +1,7 @@
 'use strict'
 import { Member } from '../entity/member.entity'
-import { MemberRepositoryInterface, MemberListParameter } from '../domain/Core/Member/RepositoryInterface/member.repositoryinterface'
-import { MemberEntity, MemberJSON } from '../domain/Core/Member/Entity/member.entity'
+import { MemberRepositoryInterface, MemberListParameter } from '../domain/LoyaltyCore/RepositoryInterface/member.repositoryinterface'
+import { MemberEntity, MemberJSON } from '../domain/LoyaltyCore/Entity/member.entity'
 const typeorm = require('typeorm')
 
 interface MemberRecord {

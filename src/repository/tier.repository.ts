@@ -2,8 +2,8 @@
 import { Tier } from '../entity/tier.entity'
 import { TierQualification } from '../entity/tierqualification.entity'
 import { PKGen } from '../entity/pkgen.entity'
-import { TierRepositoryInterface } from '../domain/Core/Tier/RepositoryInterface/tier.repositoryinterface'
-import { TierAggregateRoot, TierJSON } from '../domain/Core/Tier/AggregateRoot/tier.aggregateroot'
+import { TierRepositoryInterface } from '../domain/LoyaltyCore/RepositoryInterface/tier.repositoryinterface'
+import { TierAggregateRoot, TierJSON } from '../domain/LoyaltyCore/AggregateRoot/tier.aggregateroot'
 const typeorm = require('typeorm')
 
 interface TierRecord {

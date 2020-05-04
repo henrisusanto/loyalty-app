@@ -1,12 +1,12 @@
 import { Controller, Post, Get } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientEnrollNewMember } from '../../../domain/Core/Member/UseCase/client.enrollnewmember.usecase'
-import { ClientGetMemberList } from '../../../domain/Core/Member/UseCase/client.getmemberlist.usecase'
-import { ClientGetMemberProfile } from '../../../domain/Core/Member/UseCase/client.getmemberprofile.usecase'
-import { ClientUpdateMemberProfile } from '../../../domain/Core/Member/UseCase/client.updatememberprofile.usecase'
-import { ClientEnableMember } from '../../../domain/Core/Member/UseCase/client.enablemember.usecase'
-import { ClientDisableMember } from '../../../domain/Core/Member/UseCase/client.disablemember.usecase'
+import { ClientEnrollNewMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.enrollnewmember.usecase'
+import { ClientGetMemberList } from '../../../domain/LoyaltyCore/UseCase/Member/client.getmemberlist.usecase'
+import { ClientGetMemberProfile } from '../../../domain/LoyaltyCore/UseCase/Member/client.getmemberprofile.usecase'
+import { ClientUpdateMemberProfile } from '../../../domain/LoyaltyCore/UseCase/Member/client.updatememberprofile.usecase'
+import { ClientEnableMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.enablemember.usecase'
+import { ClientDisableMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.disablemember.usecase'
 import { MemberRepository } from '../../../repository/member.repository'
 
 @Controller({ prefix: 'api/member' })

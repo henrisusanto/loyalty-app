@@ -1,12 +1,12 @@
 import { Controller, Post, Get } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientSetDraftTier } from '../../../domain/Core/Tier/UseCase/client.setdrafttier.usecase'
-import { ClientGetDraftTier } from '../../../domain/Core/Tier/UseCase/client.getdrafttier.usecase'
-import { ClientGetActiveTierList } from '../../../domain/Core/Tier/UseCase/client.getactivetierlist.usecase'
-import { ClientDeleteDraftTier } from '../../../domain/Core/Tier/UseCase/client.deletedrafttier.usecase'
-import { SimpleTierJSON } from '../../../domain/Core/Tier/AggregateRoot/tier.aggregateroot'
-import { SimpleQualificationJSON } from '../../../domain/Core/Tier/ValueObject/qualification.valueobject'
+import { ClientSetDraftTier } from '../../../domain/LoyaltyCore/UseCase/Tier/client.setdrafttier.usecase'
+import { ClientGetDraftTier } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getdrafttier.usecase'
+import { ClientGetActiveTierList } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getactivetierlist.usecase'
+import { ClientDeleteDraftTier } from '../../../domain/LoyaltyCore/UseCase/Tier/client.deletedrafttier.usecase'
+import { SimpleTierJSON } from '../../../domain/LoyaltyCore/AggregateRoot/tier.aggregateroot'
+import { SimpleQualificationJSON } from '../../../domain/LoyaltyCore/ValueObject/qualification.valueobject'
 import { TierRepository } from '../../../repository/tier.repository'
 
 @Controller({ prefix: 'api/tier' })

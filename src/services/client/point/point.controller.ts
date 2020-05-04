@@ -1,7 +1,7 @@
 import { Controller, Post } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientUpdatePointName } from '../../../domain/Core/Point/UseCase/client.updatepointname.usecase'
+import { ClientUpdatePointName } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
 import { ConfigRepository } from '../../../repository/config.repository'
 
 @Controller({ prefix: 'api/point' })
