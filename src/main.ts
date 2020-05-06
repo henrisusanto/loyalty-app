@@ -1,4 +1,5 @@
 import { createServer, configuration } from 'fastro'
+import './domain/LoyaltyCore/Event/core.event'
 
 const start = async (): Promise<void> => {
   const conf = await configuration
