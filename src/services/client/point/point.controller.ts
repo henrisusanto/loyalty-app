@@ -2,7 +2,9 @@ import { Controller, Post } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { ClientUpdatePointName } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
+import { ClientAddMemberPoint } from '../../../domain/LoyaltyCore/UseCase/Point/client.addmemberpoint.usecase'
 import { ConfigRepository } from '../../../repository/config.repository'
+import { PointRepository } from '../../../repository/point.repository'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {
@@ -18,6 +20,19 @@ export class PointController {
   	} catch (error) {
   		reply.sendError(error)
   	}
+  }
+
+  @Post({ url: '/add' })
+  async add (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const { Member, Amount, Remarks } = JSON.parse(request.body)
+      let repo = new PointRepository ()
+      let useCase = new ClientAddMemberPoint (repo)
+      let Id = await useCase.execute ( Member, Amount, Remarks )
+      reply.sendOk({ Id })
+    } catch (error) {
+      reply.sendError(error)
+    }
   }
 
 }
