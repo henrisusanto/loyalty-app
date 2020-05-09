@@ -17,9 +17,6 @@ export class PointHeader {
 	  Member?: number
 
 	  @Column()
-	  Amount?: number
-
-	  @Column()
 	  Remarks?: string
 
 }
