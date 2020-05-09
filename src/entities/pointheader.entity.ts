@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
 
 @Entity()
-@Index(['Id', 'Member', 'Status'])
+@Index(['Id', 'Member'])
 export class PointHeader {
 
     @PrimaryGeneratedColumn()
@@ -15,9 +15,6 @@ export class PointHeader {
 
 	  @Column()
 	  Member?: number
-
-	  @Column()
-	  Status?: string
 
 	  @Column()
 	  Amount?: number

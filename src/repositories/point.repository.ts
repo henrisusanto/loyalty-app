@@ -10,7 +10,6 @@ const typeorm = require('typeorm')
 interface PointHeaderRecord {
   Id: number
   Member: number
-  Status: string
   Amount: number
   Remarks: string
 }
@@ -58,7 +57,6 @@ export class PointRepository implements PointRepositoryInterface {
     let pointHeaderRecord: PointHeaderRecord = {
       Id: data.Id,
       Member: data.Member,
-      Status: data.Status,
       Amount: data.Amount,
       Remarks: data.Remarks
     }
