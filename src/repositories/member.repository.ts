@@ -1,5 +1,5 @@
 'use strict'
-import { Member } from '../entity/member.entity'
+import { Member } from '../entities/member.entity'
 import { MemberRepositoryInterface, MemberListParameter } from '../domain/LoyaltyCore/RepositoryInterface/member.repositoryinterface'
 import { MemberEntity, MemberJSON } from '../domain/LoyaltyCore/Entity/member.entity'
 const typeorm = require('typeorm')

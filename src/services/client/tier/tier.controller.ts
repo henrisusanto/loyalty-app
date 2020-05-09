@@ -7,7 +7,7 @@ import { ClientGetActiveTierList } from '../../../domain/LoyaltyCore/UseCase/Tie
 import { ClientDeleteDraftTier } from '../../../domain/LoyaltyCore/UseCase/Tier/client.deletedrafttier.usecase'
 import { SimpleTierJSON } from '../../../domain/LoyaltyCore/AggregateRoot/tier.aggregateroot'
 import { SimpleQualificationJSON } from '../../../domain/LoyaltyCore/ValueObject/qualification.valueobject'
-import { TierRepository } from '../../../repository/tier.repository'
+import { TierRepository } from '../../../repositories/tier.repository'
 
 @Controller({ prefix: 'api/tier' })
 export class TierController {

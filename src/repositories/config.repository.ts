@@ -1,5 +1,5 @@
 'use strict'
-import { Config } from '../entity/config.entity'
+import { Config } from '../entities/config.entity'
 import { ConfigRepositoryInterface } from '../domain/LoyaltyCore/RepositoryInterface/config.repositoryinterface'
 import { ConfigEntity, ConfigJSON } from '../domain/LoyaltyCore/Entity/config.entity'
 const typeorm = require('typeorm')

@@ -1,7 +1,7 @@
 import { UpdateMemberPointEventHandlerInterface } from '../../domain/LoyaltyCore/Event/EventHandlerInterface/updatememberpoint.eventhandlerinterface'
 import { EventUpdateMemberPoint } from '../../domain/LoyaltyCore/UseCase/Member/event.updatememberpoint.usecase'
 import { PointHeaderAggregateRoot } from '../../domain/LoyaltyCore/AggregateRoot/pointheader.aggregateroot'
-import { MemberRepository } from '../../repository/member.repository'
+import { MemberRepository } from '../../repositories/member.repository'
 
 export class UpdateMemberPointEventHandler implements UpdateMemberPointEventHandlerInterface {
 

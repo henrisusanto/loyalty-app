@@ -7,7 +7,7 @@ import { ClientGetMemberProfile } from '../../../domain/LoyaltyCore/UseCase/Memb
 import { ClientUpdateMemberProfile } from '../../../domain/LoyaltyCore/UseCase/Member/client.updatememberprofile.usecase'
 import { ClientEnableMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.enablemember.usecase'
 import { ClientDisableMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.disablemember.usecase'
-import { MemberRepository } from '../../../repository/member.repository'
+import { MemberRepository } from '../../../repositories/member.repository'
 
 @Controller({ prefix: 'api/member' })
 export class MemberController {

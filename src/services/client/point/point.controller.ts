@@ -3,8 +3,8 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
 import { ClientUpdatePointName } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
 import { ClientAddMemberPoint } from '../../../domain/LoyaltyCore/UseCase/Point/client.addmemberpoint.usecase'
-import { ConfigRepository } from '../../../repository/config.repository'
-import { PointRepository } from '../../../repository/point.repository'
+import { ConfigRepository } from '../../../repositories/config.repository'
+import { PointRepository } from '../../../repositories/point.repository'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {

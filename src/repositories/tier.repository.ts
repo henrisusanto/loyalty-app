@@ -1,7 +1,7 @@
 'use strict'
-import { Tier } from '../entity/tier.entity'
-import { TierQualification } from '../entity/tierqualification.entity'
-import { PKGen } from '../entity/pkgen.entity'
+import { Tier } from '../entities/tier.entity'
+import { TierQualification } from '../entities/tierqualification.entity'
+import { PKGen } from '../entities/pkgen.entity'
 import { TierRepositoryInterface } from '../domain/LoyaltyCore/RepositoryInterface/tier.repositoryinterface'
 import { TierAggregateRoot, TierJSON } from '../domain/LoyaltyCore/AggregateRoot/tier.aggregateroot'
 const typeorm = require('typeorm')
