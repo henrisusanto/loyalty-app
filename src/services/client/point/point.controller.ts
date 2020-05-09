@@ -1,8 +1,8 @@
 import { Controller, Post } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientUpdatePointName } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
-import { ClientAddMemberPoint } from '../../../domain/LoyaltyCore/UseCase/Point/client.addmemberpoint.usecase'
+import { ClientUpdatePointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
+import { ClientAddMemberPointUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.addmemberpoint.usecase'
 import { ConfigRepository } from '../../../repositories/config.repository'
 import { PointRepository } from '../../../repositories/point.repository'
 
@@ -14,7 +14,7 @@ export class PointController {
   	try {
   		const { Name, Abbr } = JSON.parse(request.body)
 	  	const configRepo = new ConfigRepository ()
-	  	const useCase = new ClientUpdatePointName (configRepo)
+	  	const useCase = new ClientUpdatePointNameUseCase (configRepo)
 	  	const result = await useCase.execute (Name, Abbr)
 	    reply.sendOk({Name, Abbr})
   	} catch (error) {
@@ -27,7 +27,7 @@ export class PointController {
     try {
       const { Member, Amount, Remarks } = JSON.parse(request.body)
       let repo = new PointRepository ()
-      let useCase = new ClientAddMemberPoint (repo)
+      let useCase = new ClientAddMemberPointUseCase (repo)
       let Id = await useCase.execute ( Member, Amount, Remarks )
       reply.sendOk({ Id })
     } catch (error) {

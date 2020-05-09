@@ -1,12 +1,12 @@
 import { Controller, Post, Get } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientEnrollNewMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.enrollnewmember.usecase'
-import { ClientGetMemberList } from '../../../domain/LoyaltyCore/UseCase/Member/client.getmemberlist.usecase'
-import { ClientGetMemberProfile } from '../../../domain/LoyaltyCore/UseCase/Member/client.getmemberprofile.usecase'
-import { ClientUpdateMemberProfile } from '../../../domain/LoyaltyCore/UseCase/Member/client.updatememberprofile.usecase'
-import { ClientEnableMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.enablemember.usecase'
-import { ClientDisableMember } from '../../../domain/LoyaltyCore/UseCase/Member/client.disablemember.usecase'
+import { ClientEnrollNewMemberUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.enrollnewmember.usecase'
+import { ClientGetMemberListUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.getmemberlist.usecase'
+import { ClientGetMemberProfileUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.getmemberprofile.usecase'
+import { ClientUpdateMemberProfileUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.updatememberprofile.usecase'
+import { ClientEnableMemberUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.enablemember.usecase'
+import { ClientDisableMemberUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.disablemember.usecase'
 import { MemberRepository } from '../../../repositories/member.repository'
 
 @Controller({ prefix: 'api/member' })
@@ -17,7 +17,7 @@ export class MemberController {
   	try {
 	  	const payload = JSON.parse(request.body)
 	  	const memberRepo = new MemberRepository()
-	  	const useCase = new ClientEnrollNewMember(memberRepo)
+	  	const useCase = new ClientEnrollNewMemberUseCase (memberRepo)
 	  	const Id = await useCase.execute(
 	  		payload.name,
 	  		payload.email,
@@ -36,7 +36,7 @@ export class MemberController {
   	try {
 	  	const payload = request.query
 	  	const memberRepo = new MemberRepository()
-	  	const useCase = new ClientGetMemberList(memberRepo)
+	  	const useCase = new ClientGetMemberListUseCase (memberRepo)
 	  	const result = await useCase.execute(
 		    payload.record_per_page,
 		    payload.current_page,
@@ -55,7 +55,7 @@ export class MemberController {
   	try {
 		  const id:number = request.params.id
 	  	const memberRepo = new MemberRepository()
-	  	const useCase = new ClientGetMemberProfile(memberRepo)
+	  	const useCase = new ClientGetMemberProfileUseCase (memberRepo)
 	  	const result = await useCase.execute(id)
 	    reply.sendOk(result)
   	} catch (error) {
@@ -69,7 +69,7 @@ export class MemberController {
   		const id: number = parseInt (request.params.id)
 	  	const payload = JSON.parse(request.body)
 	  	const memberRepo = new MemberRepository()
-	  	const useCase = new ClientUpdateMemberProfile(memberRepo)
+	  	const useCase = new ClientUpdateMemberProfileUseCase (memberRepo)
 	  	const Id = await useCase.execute(
 	  		id,
 	  		payload.name,
@@ -89,7 +89,7 @@ export class MemberController {
   	try {
 		  const id:number = request.params.id
 	  	const memberRepo = new MemberRepository ()
-	  	const useCase = new ClientEnableMember (memberRepo)
+	  	const useCase = new ClientEnableMemberUseCase (memberRepo)
 	  	const Id = await useCase.execute (id)
 	    reply.sendOk({Id})
   	} catch (error) {
@@ -102,7 +102,7 @@ export class MemberController {
   	try {
 		  const id:number = request.params.id
 	  	const memberRepo = new MemberRepository ()
-	  	const useCase = new ClientDisableMember (memberRepo)
+	  	const useCase = new ClientDisableMemberUseCase (memberRepo)
 	  	const Id = await useCase.execute (id)
 	    reply.sendOk({Id})
   	} catch (error) {

@@ -1,10 +1,10 @@
 import { Controller, Post, Get } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientSetDraftTier } from '../../../domain/LoyaltyCore/UseCase/Tier/client.setdrafttier.usecase'
-import { ClientGetDraftTier } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getdrafttier.usecase'
-import { ClientGetActiveTierList } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getactivetierlist.usecase'
-import { ClientDeleteDraftTier } from '../../../domain/LoyaltyCore/UseCase/Tier/client.deletedrafttier.usecase'
+import { ClientSetDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.setdrafttier.usecase'
+import { ClientGetDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getdrafttier.usecase'
+import { ClientGetActiveTierListUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getactivetierlist.usecase'
+import { ClientDeleteDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.deletedrafttier.usecase'
 import { SimpleTierJSON } from '../../../domain/LoyaltyCore/AggregateRoot/tier.aggregateroot'
 import { SimpleQualificationJSON } from '../../../domain/LoyaltyCore/ValueObject/qualification.valueobject'
 import { TierRepository } from '../../../repositories/tier.repository'
@@ -18,7 +18,7 @@ export class TierController {
   		const Year = request.params.year
 	  	const payload = JSON.parse (request.body)
 	  	const tierRepo = new TierRepository ()
-	  	const useCase = new ClientSetDraftTier (tierRepo)
+	  	const useCase = new ClientSetDraftTierUseCase (tierRepo)
 
 	  	var payloadToDomain: SimpleTierJSON[] = []
 	  	for (let Name in payload) {
@@ -47,7 +47,7 @@ export class TierController {
   	try {
   		const Year = request.params.year
 	  	const tierRepo = new TierRepository ()
-	  	const useCase = new ClientGetDraftTier (tierRepo)
+	  	const useCase = new ClientGetDraftTierUseCase (tierRepo)
 	  	const result = await useCase.execute (Year)
 
 	  	var formed = {}
@@ -68,7 +68,7 @@ export class TierController {
   async getActive (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
   	try {
 	  	const tierRepo = new TierRepository ()
-	  	const useCase = new ClientGetActiveTierList (tierRepo)
+	  	const useCase = new ClientGetActiveTierListUseCase (tierRepo)
 	  	const result = await useCase.execute ()
 
 	  	var formed = {}
@@ -90,7 +90,7 @@ export class TierController {
   	try {
   		const Year = request.params.year
 	  	const tierRepo = new TierRepository ()
-	  	const useCase = new ClientDeleteDraftTier (tierRepo)
+	  	const useCase = new ClientDeleteDraftTierUseCase (tierRepo)
 	  	const result = await useCase.execute (Year)
 	    reply.sendOk({Year})
   	} catch (error) {
