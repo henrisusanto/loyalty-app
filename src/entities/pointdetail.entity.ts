@@ -17,7 +17,10 @@ export class PointDetail {
     PointHeader: number
 
     @Column()
-    Amount: number
+    YTDAmount: number
+
+    @Column()
+    LifetimeAmount: number
 
     @Column()
     Activity: string

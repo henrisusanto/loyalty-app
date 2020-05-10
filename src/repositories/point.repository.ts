@@ -15,7 +15,8 @@ interface PointHeaderRecord {
 
 interface PointDetailRecord {
   PointHeader: number
-  Amount: number
+  YTDAmount: number
+  LifetimeAmount: number
   Activity: string
   ExpiredDate: Date
 }
@@ -63,7 +64,8 @@ export class PointRepository implements PointRepositoryInterface {
     for (let q of data.Details) {
       pointDetailRecords.push({
         PointHeader: pointHeaderRecord.Id,
-        Amount: q.Amount,
+        YTDAmount: q.YTDAmount,
+        LifetimeAmount: q.LifetimeAmount,
         Activity: q.Activity,
         ExpiredDate: q.ExpiredDate
       })

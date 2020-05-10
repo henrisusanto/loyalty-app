@@ -25,10 +25,10 @@ export class PointController {
   @Post({ url: '/add' })
   async add (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
     try {
-      const { Member, Amount, Remarks } = JSON.parse(request.body)
+      const { Member, YTDPoint, LifetimePoint, Remarks } = JSON.parse(request.body)
       let repo = new PointRepository ()
       let useCase = new ClientAddMemberPointUseCase (repo)
-      let Id = await useCase.execute ( Member, Amount, Remarks )
+      let Id = await useCase.execute ( Member, YTDPoint, LifetimePoint, Remarks )
       reply.sendOk({ Id })
     } catch (error) {
       reply.sendError(error)
