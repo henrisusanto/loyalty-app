@@ -1,7 +1,7 @@
 'use strict'
 import { ManualPoint } from '../entities/manualpoint.entity'
 import { ManualPointRepositoryInterface } from '../domain/LoyaltyCore/RepositoryInterface/manualpoint.repositoryinterface'
-import { ManualPointEntity } from '../domain/LoyaltyCore/Entity/manualpoint.entity'
+import { ManualPointAggregateRoot } from '../domain/LoyaltyCore/AggregateRoot/manualpoint.aggregateroot'
 const typeorm = require('typeorm')
 
 interface ManualPointRecord {
@@ -22,22 +22,17 @@ export class ManualPointRepository implements ManualPointRepositoryInterface {
         this.repo = this.conn.getRepository (ManualPoint)
     }
 
-    public async insert (data: ManualPointEntity): Promise <number> {
+    public async insert (data: ManualPointAggregateRoot): Promise <number> {
         try {
             let record = this.toPersistence (data)
             const saved = await this.repo.save (record)
-            this.triggerAfterInsertManualPoint (data, saved.Id)
             return saved.Id
         } catch (e) {
             throw new Error (e)
         }
     }
 
-    public triggerAfterInsertManualPoint (data: ManualPointEntity, Id: number) {
-
-    }
-
-    private toPersistence (data: ManualPointEntity): ManualPointRecord {
+    private toPersistence (data: ManualPointAggregateRoot): ManualPointRecord {
         let ManualPointJSON = data.toJSON ()
         return {
             Member: ManualPointJSON.Member,
