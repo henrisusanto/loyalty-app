@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index } from "typeorm"
 
 @Entity()
-@Index(['Id', 'Year'])
-export class YTDPoint {
+@Index(['Id', 'Member', 'ExpiredDate', 'Activity', 'Reference', 'Remaining', 'Remarks'])
+export class LifetimePoint {
 
     @PrimaryGeneratedColumn()
     Id: number;
@@ -26,7 +26,13 @@ export class YTDPoint {
 	  Amount?: number
 
 	  @Column()
-	  Year?: number
+	  Remaining?: number
+
+	  @Column()
+	  DateIn?: Date
+
+	  @Column()
+	  ExpiredDate?: Date
 
 	  @Column()
 	  Remarks?: string
