@@ -6,9 +6,7 @@ import { ConfigRepository } from '../../../repositories/config.repository'
 import { ClientSendPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.sendpoint.usecase'
 
 import { ManualPointRepository } from '../../../repositories/manualpoint.repository'
-import { MemberRepository } from '../../../repositories/member.repository'
-import { YTDPointRepository } from '../../../repositories/ytdpoint.repository'
-import { LifetimePointRepository } from '../../../repositories/lifetimepoint.repository'
+import { MemberPointRepository } from '../../../repositories/memberpoint.repository'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {
@@ -32,11 +30,9 @@ export class PointController {
       const { Member, LifetimeDateIn, YTD, Lifetime, Remarks } = JSON.parse(request.body)
 
       const manualPointRepo = new ManualPointRepository ()
-      const memberRepo = new MemberRepository ()
-      const YTDRepo = new YTDPointRepository ()
-      const LifetimeRepo = new LifetimePointRepository ()
+      const memberPointRepo = new MemberPointRepository ()
 
-      const useCase = new ClientSendPointUsecase (manualPointRepo, memberRepo, YTDRepo, LifetimeRepo)
+      const useCase = new ClientSendPointUsecase (manualPointRepo, memberPointRepo)
       reply.sendOk (await useCase.execute (Member, YTD, Lifetime, LifetimeDateIn, Remarks))
     } catch (error) {
       reply.sendError(error)
