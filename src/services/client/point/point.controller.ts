@@ -1,12 +1,16 @@
-import { Controller, Post } from 'fastro'
+import { Controller, Post, Get } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
-import { ClientUpdatePointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
-import { ConfigRepository } from '../../../repositories/config.repository'
-import { ClientSendPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.sendpoint.usecase'
 
 import { ManualPointRepository } from '../../../repositories/manualpoint.repository'
-import { MemberPointRepository } from '../../../repositories/memberpoint.repository'
+import { PointRepository } from '../../../repositories/point.repository'
+import { MemberRepository } from '../../../repositories/member.repository'
+import { ConfigRepository } from '../../../repositories/config.repository'
+
+import { ClientUpdatePointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
+import { ClientAddMemberPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.addmemberpoint.usecase'
+import { ClientDeductMemberPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.deductmemberpoint'
+import { ClientGetMemberPointHistory } from '../../../domain/LoyaltyCore/UseCase/Point/client.getmemberpointhistory.usecase'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {
@@ -24,19 +28,44 @@ export class PointController {
   	}
   }
 
-  @Post({ url: '/send' })
-  async send (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  @Post({ url: '/add' })
+  async add (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
     try {
       const { Member, LifetimeDateIn, YTD, Lifetime, Remarks } = JSON.parse(request.body)
-
-      const manualPointRepo = new ManualPointRepository ()
-      const memberPointRepo = new MemberPointRepository ()
-
-      const useCase = new ClientSendPointUsecase (manualPointRepo, memberPointRepo)
+      const ManualRepo = new ManualPointRepository ()
+      const PointRepo = new PointRepository ()
+      const MemberRepo = new MemberRepository ()
+      const useCase = new ClientAddMemberPointUsecase (ManualRepo, PointRepo, MemberRepo)
       reply.sendOk (await useCase.execute (Member, YTD, Lifetime, LifetimeDateIn, Remarks))
     } catch (error) {
       reply.sendError(error)
     }
   }
 
+  @Post({ url: '/deduct' })
+  async deduct (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const { Member, YTD, Lifetime, Remarks } = JSON.parse(request.body)
+      const ManualRepo = new ManualPointRepository ()
+      const PointRepo = new PointRepository ()
+      const MemberRepo = new MemberRepository ()
+      const useCase = new ClientDeductMemberPointUsecase (ManualRepo, PointRepo, MemberRepo)
+      reply.sendOk (await useCase.execute (Member, YTD, Lifetime, Remarks))
+    } catch (error) {
+      reply.sendError(error)
+    }
+  }
+
+  @Get({ url: '/history/:member' })
+  async history (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const member:number = request.params.member
+      const repository = new PointRepository ()
+      const useCase = new ClientGetMemberPointHistory (repository)
+      const result = await useCase.execute(member)
+      reply.sendOk(result)
+    } catch (error) {
+      reply.sendError(error)
+    }
+  }
 }
