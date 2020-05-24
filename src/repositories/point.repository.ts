@@ -85,6 +85,40 @@ export class PointRepository implements PointRepositoryInterface {
 		return domains
 	}
 
+	public async findLifetimePointGreaterThan0SortByTime (parameter)
+	: Promise <{TotalRecord: number, TotalPoint: number, Result: PointEntity []}> {
+
+		let { TotalPoint } = await this.repo
+		  .createQueryBuilder('point')
+		  .select('SUM(LifetimeAmount)', 'TotalPoint')
+		  .where ('LifetimeAmount > 0')
+		  .andWhere (`point.Time BETWEEN ${parameter.Since} AND ${parameter.Until}`)
+		  .getRawOne() || 0
+
+		let { TotalRecord } = await this.repo
+		  .createQueryBuilder('point')
+		  .select('COUNT(Id)', 'TotalRecord')
+		  .where ('LifetimeAmount > 0')
+		  .andWhere (`point.Time BETWEEN ${parameter.Since} AND ${parameter.Until}`)
+		  .getRawOne() || 0
+
+		let found = await this.repo
+			.createQueryBuilder('point')
+			.select('*')
+		  .where ('LifetimeAmount > 0')
+		  .andWhere (`point.Time BETWEEN ${parameter.Since} AND ${parameter.Until}`)
+		  .orderBy('Time', 'ASC')
+		  .limit(parameter.Limit)
+		  .offset(parameter.Offset)
+		  .getRawMany()
+
+		let Result = found.map(record => {
+			return this.toDomain (record)
+		})
+
+		return { TotalRecord, TotalPoint, Result}
+	}
+
 	private toDomain (data): PointEntity {
 		let domain = new PointEntity ()
 		domain.fromJSON ({
