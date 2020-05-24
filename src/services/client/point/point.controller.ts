@@ -12,6 +12,7 @@ import { ClientAddMemberPointUsecase } from '../../../domain/LoyaltyCore/UseCase
 import { ClientDeductMemberPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.deductmemberpoint'
 import { ClientGetMemberPointHistory } from '../../../domain/LoyaltyCore/UseCase/Point/client.getmemberpointhistory.usecase'
 import { ClientGetAccumulatedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getaccumulatedreport.usecase'
+import { ClientGetRedeemedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getredeemedreport.usecase'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {
@@ -76,6 +77,19 @@ export class PointController {
       const { record_per_page, current_page, since, until } = request.query
       const repository = new PointRepository ()
       const useCase = new ClientGetAccumulatedReport (repository)
+      const result = await useCase.execute( record_per_page, current_page, since, until )
+      reply.sendOk(result)
+    } catch (error) {
+      reply.sendError(error)
+    }
+  }
+
+  @Get({ url: '/report/redeemed' })
+  async pointRedeemedReport (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const { record_per_page, current_page, since, until } = request.query
+      const repository = new PointRepository ()
+      const useCase = new ClientGetRedeemedReport (repository)
       const result = await useCase.execute( record_per_page, current_page, since, until )
       reply.sendOk(result)
     } catch (error) {
