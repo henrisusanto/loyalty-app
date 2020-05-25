@@ -13,6 +13,7 @@ import { ClientDeductMemberPointUsecase } from '../../../domain/LoyaltyCore/UseC
 import { ClientGetMemberPointHistory } from '../../../domain/LoyaltyCore/UseCase/Point/client.getmemberpointhistory.usecase'
 import { ClientGetAccumulatedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getaccumulatedreport.usecase'
 import { ClientGetRedeemedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getredeemedreport.usecase'
+import { SchedulerExpirePoints } from '../../../domain/LoyaltyCore/UseCase/Point/scheduler.expirepoint.usecase'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {
@@ -96,4 +97,17 @@ export class PointController {
       reply.sendError(error)
     }
   }
+
+  @Post({ url: '/expire' })
+  async expire (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const PointRepo = new PointRepository ()
+      const MemberRepo = new MemberRepository ()
+      const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo)
+      reply.sendOk (await useCase.execute ())
+    } catch (error) {
+      reply.sendError(error)
+    }
+  }
+
 }

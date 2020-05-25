@@ -152,6 +152,19 @@ export class PointRepository implements PointRepositoryInterface {
 		return { TotalRecord, TotalPoint, Result}
 	}
 
+	public async getRemainingGT0ExpiredDateLTEtoday (): Promise <PointEntity []> {
+		let found = await this.repo
+			.createQueryBuilder('point')
+			.select('*')
+		  .where ('LifetimeRemaining > 0')
+		  .andWhere (`LifetimeExpiredDate <= CURRENT_DATE()`)
+		  .getRawMany()
+
+		return found.map(record => {
+			return this.toDomain (record)
+		})
+	}
+
 	private toDomain (data): PointEntity {
 		let domain = new PointEntity ()
 		domain.fromJSON ({
