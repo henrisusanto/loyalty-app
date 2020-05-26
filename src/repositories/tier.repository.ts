@@ -10,6 +10,7 @@ interface TierRecord {
   Id: number
   Name: string
   Year: number
+  Level: number
 }
 
 interface QualificationRecord {
@@ -84,7 +85,8 @@ export class TierRepository implements TierRepositoryInterface {
     let tierRecord: TierRecord = {
       Id: data.Id,
       Name: data.Name,
-      Year: data.Year
+      Year: data.Year,
+      Level: data.Level
     }
     let qualificationRecords: QualificationRecord[] = []
     for (let q of data.Qualifications) {
@@ -111,6 +113,7 @@ export class TierRepository implements TierRepositoryInterface {
       Id: tier.Id,
       Name: tier.Name,
       Year: tier.Year,
+      Level: tier.Level,
       Qualifications: qualificationJSON
     }
     tierAggregateRoot.fromJSON (tierJSON)

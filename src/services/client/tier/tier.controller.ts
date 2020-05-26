@@ -21,19 +21,20 @@ export class TierController {
 	  	const useCase = new ClientSetDraftTierUseCase (tierRepo)
 
 	  	var payloadToDomain: SimpleTierJSON[] = []
-	  	for (let Name in payload) {
+	  	payload.forEach (tier => {
 					let Qualifications: SimpleQualificationJSON[] = []
-					for (let MemberField in payload[Name]) {
+					for (let MemberField in tier.Qualifications) {
 						Qualifications.push({
 							MemberField,
-							ThresholdValue: payload[Name][MemberField]
+							ThresholdValue: tier.Qualifications[MemberField]
 						})
 					}
 					payloadToDomain.push({
-						Name,
+						Name: tier.Name,
+						Level: tier.Level,
 						Qualifications
 					})
-	  	}
+	  	})
 
 	  	const result = await useCase.execute (Year, payloadToDomain)
 	    reply.sendOk({Year})
@@ -50,13 +51,17 @@ export class TierController {
 	  	const useCase = new ClientGetDraftTierUseCase (tierRepo)
 	  	const result = await useCase.execute (Year)
 
-	  	var formed = {}
-	  	for ( let r of result ) {
-	  		formed[r.Name] = {}
-	  		for ( let q of r.Qualifications ) {
-	  			formed[r.Name][q.MemberField] = q.ThresholdValue
+	  	let formed = result.map(r => {
+	  		let qualifications = {}
+	  		r.Qualifications.forEach (q => {
+	  			qualifications[q.MemberField] = q.ThresholdValue
+	  		})
+	  		return {
+	  			Name: r.Name,
+	  			Level: r.Level,
+	  			Qualifications: qualifications
 	  		}
-	  	}
+	  	})
 
 	    reply.sendOk(formed)
   	} catch (error) {
@@ -71,13 +76,17 @@ export class TierController {
 	  	const useCase = new ClientGetActiveTierListUseCase (tierRepo)
 	  	const result = await useCase.execute ()
 
-	  	var formed = {}
-	  	for ( let r of result ) {
-	  		formed[r.Name] = {}
-	  		for ( let q of r.Qualifications ) {
-	  			formed[r.Name][q.MemberField] = q.ThresholdValue
+	  	let formed = result.map(r => {
+	  		let qualifications = {}
+	  		r.Qualifications.forEach (q => {
+	  			qualifications[q.MemberField] = q.ThresholdValue
+	  		})
+	  		return {
+	  			Name: r.Name,
+	  			Level: r.Level,
+	  			Qualifications: qualifications
 	  		}
-	  	}
+	  	})
 
 	    reply.sendOk(formed)
   	} catch (error) {

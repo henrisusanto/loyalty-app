@@ -19,4 +19,6 @@ export class Tier {
 	  @Column()
 	  Year?: number
 
+	  @Column()
+	  Level: number
 }
