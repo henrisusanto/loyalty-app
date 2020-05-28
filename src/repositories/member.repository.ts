@@ -54,6 +54,30 @@ export class MemberRepository implements MemberRepositoryInterface {
         })
     }
 
+    public async findForTierCalculation (parameters, limit: number): Promise <MemberEntity[]> {
+        console.log (JSON.stringify (parameters))
+
+        let tierSet: string[] = parameters.OR.map(tier => {
+            let qualifications: string[] = tier.OR.map(qualification => {
+                return `${qualification.Field} ${qualification.Operator} ${qualification.FieldValue}`
+            })
+            if ('IN' === tier.AND.Operator) tier.AND.FieldValue = `(${tier.AND.FieldValue.join(',')})`
+            return `((${qualifications.join(' OR ')}) AND ${tier.AND.Field} ${tier.AND.Operator} ${tier.AND.FieldValue})`
+        })
+        let where: string = tierSet.join (' OR ')
+
+        let members = await this.repo
+          .createQueryBuilder('member')
+          .select('*')
+          .where (where)
+          .limit(limit)
+          .getRawMany()
+
+        return members.map (member => {
+            return this.toDomain (member)
+        })
+    }
+
     public async findOne (Id: number): Promise <MemberEntity> {
         const found = await this.repo.findOne(Id)
         if (!found) throw new Error ('Member not found')

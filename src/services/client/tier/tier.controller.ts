@@ -1,13 +1,19 @@
 import { Controller, Post, Get } from 'fastro'
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { Http2ServerResponse } from 'http2'
+
 import { ClientSetDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.setdrafttier.usecase'
 import { ClientGetDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getdrafttier.usecase'
 import { ClientGetActiveTierListUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getactivetierlist.usecase'
 import { ClientDeleteDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.deletedrafttier.usecase'
+import { SchedulerUpgradeTierUsecase } from '../../../domain/LoyaltyCore/UseCase/Tier/scheduler.upgradetier.usecase'
+
 import { SimpleTierJSON } from '../../../domain/LoyaltyCore/AggregateRoot/tier.aggregateroot'
 import { SimpleQualificationJSON } from '../../../domain/LoyaltyCore/ValueObject/qualification.valueobject'
+
 import { TierRepository } from '../../../repositories/tier.repository'
+import { MemberRepository } from '../../../repositories/member.repository'
+import { TierHistoryRepository } from '../../../repositories/tierhistory.repository'
 
 @Controller({ prefix: 'api/tier' })
 export class TierController {
@@ -107,9 +113,18 @@ export class TierController {
   	}
   }
 
-  @Post({ url: '/name' })
-  async updatePointName (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
-  	reply.sendOk('kontol')
+  @Post({ url: '/upgrade' })
+  async upgrade (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	try {
+	  	const tierRepo = new TierRepository ()
+	  	const memberRepo = new MemberRepository ()
+	  	const historyRepo = new TierHistoryRepository ()
+	  	const useCase = new SchedulerUpgradeTierUsecase (tierRepo, memberRepo, historyRepo)
+	  	const result = await useCase.execute (100)
+	    reply.sendOk(result)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
   }
 
 }
