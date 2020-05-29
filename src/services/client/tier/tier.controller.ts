@@ -114,29 +114,31 @@ export class TierController {
   	}
   }
 
-  @Post({ url: '/upgrade' })
+  @Post({ url: '/upgrade/:limit' })
   async upgrade (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
   	try {
+  		const limit = request.params.limit
 	  	const tierRepo = new TierRepository ()
 	  	const memberRepo = new MemberRepository ()
 	  	const historyRepo = new TierHistoryRepository ()
 	  	const useCase = new SchedulerUpgradeTierUsecase (tierRepo, memberRepo, historyRepo)
-	  	const result = await useCase.execute (1000)
-	    reply.sendOk(result)
+	  	const result = await useCase.execute (limit)
+	    reply.sendOk({upgraded: result})
   	} catch (error) {
   		reply.sendError(error)
   	}
   }
 
-  @Post({ url: '/downgrade' })
+  @Post({ url: '/downgrade/:limit' })
   async downgrade (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
   	try {
+	  	const limit = request.params.limit
 	  	const tierRepo = new TierRepository ()
 	  	const memberRepo = new MemberRepository ()
 	  	const historyRepo = new TierHistoryRepository ()
 	  	const useCase = new SchedulerDowngradeTierUsecase (tierRepo, memberRepo, historyRepo)
-	  	const result = await useCase.execute (1000)
-	    reply.sendOk(result)
+	  	const result = await useCase.execute (limit)
+	    reply.sendOk({downgraded: result})
   	} catch (error) {
   		reply.sendError(error)
   	}
