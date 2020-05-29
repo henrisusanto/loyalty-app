@@ -7,6 +7,7 @@ import { ClientGetDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/T
 import { ClientGetActiveTierListUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.getactivetierlist.usecase'
 import { ClientDeleteDraftTierUseCase } from '../../../domain/LoyaltyCore/UseCase/Tier/client.deletedrafttier.usecase'
 import { SchedulerUpgradeTierUsecase } from '../../../domain/LoyaltyCore/UseCase/Tier/scheduler.upgradetier.usecase'
+import { SchedulerDowngradeTierUsecase } from '../../../domain/LoyaltyCore/UseCase/Tier/scheduler.downgradetier.usecase'
 
 import { SimpleTierJSON } from '../../../domain/LoyaltyCore/AggregateRoot/tier.aggregateroot'
 import { SimpleQualificationJSON } from '../../../domain/LoyaltyCore/ValueObject/qualification.valueobject'
@@ -120,7 +121,21 @@ export class TierController {
 	  	const memberRepo = new MemberRepository ()
 	  	const historyRepo = new TierHistoryRepository ()
 	  	const useCase = new SchedulerUpgradeTierUsecase (tierRepo, memberRepo, historyRepo)
-	  	const result = await useCase.execute (100)
+	  	const result = await useCase.execute (1000)
+	    reply.sendOk(result)
+  	} catch (error) {
+  		reply.sendError(error)
+  	}
+  }
+
+  @Post({ url: '/downgrade' })
+  async downgrade (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  	try {
+	  	const tierRepo = new TierRepository ()
+	  	const memberRepo = new MemberRepository ()
+	  	const historyRepo = new TierHistoryRepository ()
+	  	const useCase = new SchedulerDowngradeTierUsecase (tierRepo, memberRepo, historyRepo)
+	  	const result = await useCase.execute (1000)
 	    reply.sendOk(result)
   	} catch (error) {
   		reply.sendError(error)

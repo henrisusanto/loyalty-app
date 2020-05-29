@@ -55,14 +55,23 @@ export class MemberRepository implements MemberRepositoryInterface {
     }
 
     public async findForTierCalculation (parameters, limit: number): Promise <MemberEntity[]> {
-        console.log (JSON.stringify (parameters))
-
         let tierSet: string[] = parameters.OR.map(tier => {
-            let qualifications: string[] = tier.OR.map(qualification => {
-                return `${qualification.Field} ${qualification.Operator} ${qualification.FieldValue}`
+            var nestedWhere: string[] = []
+
+            if (tier.OR.length > 0) {
+                let aor: string[] = tier.OR.map (q => {
+                    return `${q.Field} ${q.Operator} ${q.FieldValue}`
+                })
+                nestedWhere.push (`(${aor.join(' OR ')})`)
+            }
+
+            let aand: string[] = tier.AND.map (q => {
+                if ('IN' === q.Operator) q.FieldValue = `(${q.FieldValue.join(',')})`
+                return `${q.Field} ${q.Operator} ${q.FieldValue}`
             })
-            if ('IN' === tier.AND.Operator) tier.AND.FieldValue = `(${tier.AND.FieldValue.join(',')})`
-            return `((${qualifications.join(' OR ')}) AND ${tier.AND.Field} ${tier.AND.Operator} ${tier.AND.FieldValue})`
+            nestedWhere.push (aand.join(' AND '))
+
+            return `(${nestedWhere.join(' AND ')})`
         })
         let where: string = tierSet.join (' OR ')
 
