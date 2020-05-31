@@ -56,20 +56,20 @@ export class PointRepository implements PointRepositoryInterface {
 		return IDs
 	}
 
-	public async findLifetimeGreaterThan0HasNoParentSortByTime (Member: number): Promise <PointEntity []> {
-		let domains: PointEntity [] = []
-		let found = await this.repo.find ({
-			Member,
-			LifetimeAmount: MoreThan(0),
-			Parent: LessThan(1),
-	    order: {
-        Time: 'ASC',
-	    }
-		})
-		found.forEach(record => {
-			domains.push (this.toDomain (record))
-		})
-		return domains
+	public async findHistory (Criteria): Promise <PointEntity []> {
+		var query = this.repo
+			.createQueryBuilder('point')
+			.select('*')
+		  .where (1)
+
+		 Object.keys(Criteria).forEach(field => {
+		 	query.andWhere(`${field} ${Criteria[field]}`)
+		 })
+
+		 let result = await query.getRawMany ()
+		 return result.map(record => {
+		 	return this.toDomain (record)
+		 })
 	}
 
 	public async findPointByParentIds (ParentIDs: number[]): Promise <PointEntity []> {
@@ -152,14 +152,34 @@ export class PointRepository implements PointRepositoryInterface {
 		return { TotalRecord, TotalPoint, Result}
 	}
 
-	public async getRemainingGT0ExpiredDateLTEtoday (): Promise <PointEntity []> {
-		let found = await this.repo
-			.createQueryBuilder('point')
-			.select('*')
-		  .where ('LifetimeRemaining > 0')
-		  .andWhere (`LifetimeExpiredDate <= CURRENT_DATE()`)
-		  .getRawMany()
+	public async getDistinctMemberExpiredPoint (Limit: number, ExpiredCriteria): Promise <number []> {
+		var query = this.repo
+		  .createQueryBuilder ('point')
+		  .select ('DISTINCT Member', 'Member')
+		  .where (1)
+		  .limit (Limit)
 
+		ExpiredCriteria.AND.forEach (field => {
+			query.andWhere (`${field.Field} ${field.Operator} ${field.FieldValue}`)
+		})
+
+		let result = await query.getRawMany ()
+		return result.map(row => {
+			return row.Member
+		})
+	}
+
+	public async getExpiredByMembers (Members: number [], ExpiredCriteria): Promise <PointEntity []> {
+		var query = this.repo
+		  .createQueryBuilder('point')
+		  .select('*')
+		  .where (`Member IN (${Members.join(',')})`)
+
+		ExpiredCriteria.AND.forEach (field => {
+			query.andWhere (`${field.Field} ${field.Operator} ${field.FieldValue}`)
+		})
+
+		let found = await query.getRawMany() || []
 		return found.map(record => {
 			return this.toDomain (record)
 		})

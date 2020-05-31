@@ -98,13 +98,14 @@ export class PointController {
     }
   }
 
-  @Post({ url: '/expire' })
+  @Post({ url: '/expire/:limit' })
   async expire (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
     try {
+      const limit = request.params.limit
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
       const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo)
-      reply.sendOk (await useCase.execute ())
+      reply.sendOk (await useCase.execute (limit))
     } catch (error) {
       reply.sendError(error)
     }
