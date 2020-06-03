@@ -6,6 +6,7 @@ import { ManualPointRepository } from '../../../repositories/manualpoint.reposit
 import { PointRepository } from '../../../repositories/point.repository'
 import { MemberRepository } from '../../../repositories/member.repository'
 import { ConfigRepository } from '../../../repositories/config.repository'
+import { ActivityRateRepository } from '../../../repositories/activityrate.repository'
 
 import { ClientUpdatePointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
 import { ClientAddMemberPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.addmemberpoint.usecase'
@@ -14,6 +15,8 @@ import { ClientGetMemberPointHistory } from '../../../domain/LoyaltyCore/UseCase
 import { ClientGetAccumulatedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getaccumulatedreport.usecase'
 import { ClientGetRedeemedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getredeemedreport.usecase'
 import { SchedulerExpirePoints } from '../../../domain/LoyaltyCore/UseCase/Point/scheduler.expirepoint.usecase'
+import { ClientGetActivityRateUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.getactivityrate.usecase'
+import { ClientUpdateActivityRateUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updateactivityrate.usecase'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {
@@ -106,6 +109,31 @@ export class PointController {
       const MemberRepo = new MemberRepository ()
       const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo)
       reply.sendOk (await useCase.execute (limit))
+    } catch (error) {
+      reply.sendError(error)
+    }
+  }
+
+  @Get({ url: '/rate' })
+  async getRate (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const repository = new ActivityRateRepository ()
+      const useCase = new ClientGetActivityRateUseCase (repository)
+      const result = await useCase.execute()
+      reply.sendOk(result)
+    } catch (error) {
+      reply.sendError(error)
+    }
+  }
+
+  @Post({ url: '/rate' })
+  async setRate (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const rates = JSON.parse (request.body)
+      const repository = new ActivityRateRepository ()
+      const useCase = new ClientUpdateActivityRateUseCase (repository)
+      const result = await useCase.execute(rates)
+      reply.sendOk(result)
     } catch (error) {
       reply.sendError(error)
     }
