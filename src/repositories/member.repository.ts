@@ -94,17 +94,6 @@ export class MemberRepository implements MemberRepositoryInterface {
         return this.toDomain(found)
     }
 
-    public async findActiveMemberById (Id: number): Promise <MemberEntity> {
-        let found = await this.repo
-          .createQueryBuilder('member')
-          .select('*')
-          .where (`Id = ${Id}`)
-          .andWhere ('Status = 1')
-          .getRawOne()
-        if (!found) throw new Error ('Member not found or inactive')
-        return this.toDomain (found)
-    }
-
     public async findByIDs (IDs: number []): Promise <MemberEntity []> {
         let found = await this.repo.find ({
             Id: In(IDs),

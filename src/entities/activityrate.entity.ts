@@ -19,4 +19,6 @@ export class ActivityRate {
 	  @Column()
 	  Rate: number
 
+	  @Column()
+	  ExpiredMonth: number
 }

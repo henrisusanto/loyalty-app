@@ -37,6 +37,9 @@ export class Point {
 		@Column()
 		Remarks: string
 
+		@Column ()
+		Rate: number
+
 	  @CreateDateColumn()
 	  createdAt?: Date
 

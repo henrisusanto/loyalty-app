@@ -30,13 +30,13 @@ export class PointRepository implements PointRepositoryInterface {
 		 })
 	}
 
-	public async bulkSave (points: PointEntity []): Promise <number[]> {
-		var IDs: number[] = []
-		points.forEach(async point => {
+	public async save (point: PointEntity): Promise <number> {
+		try {
 			let saved = await this.repo.save (this.toPersistence (point))
-			IDs.push (saved.Id)
-		})
-		return IDs
+			return saved.Id
+		} catch (e) {
+			throw new Error (e)
+		}
 	}
 
 	public async findHistory (Criteria): Promise <PointEntity []> {
@@ -181,7 +181,8 @@ export class PointRepository implements PointRepositoryInterface {
 			LifetimeAmount: data.LifetimeAmount,
 			LifetimeRemaining: data.LifetimeRemaining,
 			LifetimeExpiredDate: data.LifetimeExpiredDate,
-			Remarks: data.Remarks
+			Remarks: data.Remarks,
+			Rate: data.Rate
 		})
 		return domain
 	}
@@ -199,7 +200,8 @@ export class PointRepository implements PointRepositoryInterface {
 			LifetimeAmount: json.LifetimeAmount,
 			LifetimeRemaining: json.LifetimeRemaining,
 			LifetimeExpiredDate: json.LifetimeExpiredDate,
-			Remarks: json.Remarks
+			Remarks: json.Remarks,
+			Rate: json.Rate
 		}
 	}
 

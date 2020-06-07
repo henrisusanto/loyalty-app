@@ -8,9 +8,8 @@ import { MemberRepository } from '../../../repositories/member.repository'
 import { ConfigRepository } from '../../../repositories/config.repository'
 import { ActivityRateRepository } from '../../../repositories/activityrate.repository'
 
+import { ClientSendPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.sendpoint.usecase'
 import { ClientUpdatePointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
-import { ClientAddMemberPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.addmemberpoint.usecase'
-import { ClientDeductMemberPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.deductmemberpoint'
 import { ClientGetMemberPointHistory } from '../../../domain/LoyaltyCore/UseCase/Point/client.getmemberpointhistory.usecase'
 import { ClientGetAccumulatedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getaccumulatedreport.usecase'
 import { ClientGetRedeemedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getredeemedreport.usecase'
@@ -34,29 +33,21 @@ export class PointController {
   	}
   }
 
-  @Post({ url: '/add' })
-  async add (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+  @Post({ url: '/send' })
+  async sendPoint (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
     try {
       const { Member, LifetimeDateIn, YTD, Lifetime, Remarks } = JSON.parse(request.body)
       const ManualRepo = new ManualPointRepository ()
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const useCase = new ClientAddMemberPointUsecase (ManualRepo, PointRepo, MemberRepo)
+      const RateRepo = new ActivityRateRepository ()
+      const useCase = new ClientSendPointUsecase (
+        ManualRepo,
+        MemberRepo,
+        PointRepo,
+        RateRepo
+      )
       reply.sendOk (await useCase.execute (Member, YTD, Lifetime, LifetimeDateIn, Remarks))
-    } catch (error) {
-      reply.sendError(error)
-    }
-  }
-
-  @Post({ url: '/deduct' })
-  async deduct (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
-    try {
-      const { Member, YTD, Lifetime, Remarks } = JSON.parse(request.body)
-      const ManualRepo = new ManualPointRepository ()
-      const PointRepo = new PointRepository ()
-      const MemberRepo = new MemberRepository ()
-      const useCase = new ClientDeductMemberPointUsecase (ManualRepo, PointRepo, MemberRepo)
-      reply.sendOk (await useCase.execute (Member, YTD, Lifetime, Remarks))
     } catch (error) {
       reply.sendError(error)
     }
@@ -107,7 +98,8 @@ export class PointController {
       const limit = request.params.limit
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo)
+      const RateRepo = new ActivityRateRepository ()
+      const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo, RateRepo)
       reply.sendOk (await useCase.execute (limit))
     } catch (error) {
       reply.sendError(error)

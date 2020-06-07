@@ -8,6 +8,7 @@ interface ActivityRateRecord {
     Code: string
     Description: string
     Rate: number
+    ExpiredMonth: number
 }
 
 export class ActivityRateRepository implements ActivityRateRepositoryInterface {
@@ -28,8 +29,13 @@ export class ActivityRateRepository implements ActivityRateRepositoryInterface {
     }
 
     public async findByCode (Code: string): Promise <ActivityRateEntity> {
-        let record = await this.repo.findOne ({where: {Code}})
-        return this.toDomain (record)
+        try {
+            let record = await this.repo.findOne ({where: {Code}})
+            if (!record) throw new Error ('Rate not found')
+            return this.toDomain (record)
+        } catch (e) {
+            throw new Error (e)
+        }
     }
 
     public async update (data: ActivityRateEntity): Promise <string> {
@@ -42,7 +48,8 @@ export class ActivityRateRepository implements ActivityRateRepositoryInterface {
         activityRateE.fromJSON ({
             Code: data.Code,
             Description: data.Description,
-            Rate: data.Rate
+            Rate: data.Rate,
+            ExpiredMonth: data.ExpiredMonth
         })
         return activityRateE
     }
@@ -52,7 +59,8 @@ export class ActivityRateRepository implements ActivityRateRepositoryInterface {
         return {
             Code: activityRateJSON.Code,
             Description: activityRateJSON.Description,
-            Rate: activityRateJSON.Rate
+            Rate: activityRateJSON.Rate,
+            ExpiredMonth: activityRateJSON.ExpiredMonth
         }
     }
 }
