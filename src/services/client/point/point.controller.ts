@@ -71,7 +71,8 @@ export class PointController {
     try {
       const member:number = request.params.member
       const repository = new PointRepository ()
-      const useCase = new ClientGetMemberPointHistory (repository)
+      const rateRepo = new ActivityRateRepository ()
+      const useCase = new ClientGetMemberPointHistory (repository, rateRepo)
       const result = await useCase.execute(member)
       reply.sendOk(result)
     } catch (error) {
@@ -84,7 +85,9 @@ export class PointController {
     try {
       const { record_per_page, current_page, since, until } = request.query
       const repository = new PointRepository ()
-      const useCase = new ClientGetAccumulatedReport (repository)
+      const rateRepo = new ActivityRateRepository ()
+      const memberRepo = new MemberRepository ()
+      const useCase = new ClientGetAccumulatedReport (repository, rateRepo, memberRepo)
       const result = await useCase.execute( record_per_page, current_page, since, until )
       reply.sendOk(result)
     } catch (error) {
