@@ -100,7 +100,9 @@ export class PointController {
     try {
       const { record_per_page, current_page, since, until } = request.query
       const repository = new PointRepository ()
-      const useCase = new ClientGetRedeemedReport (repository)
+      const rateRepo = new ActivityRateRepository ()
+      const memberRepo = new MemberRepository ()
+      const useCase = new ClientGetRedeemedReport (repository, rateRepo, memberRepo)
       const result = await useCase.execute( record_per_page, current_page, since, until )
       reply.sendOk(result)
     } catch (error) {
