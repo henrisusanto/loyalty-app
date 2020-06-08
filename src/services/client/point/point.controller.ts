@@ -10,6 +10,7 @@ import { ActivityRateRepository } from '../../../repositories/activityrate.repos
 
 import { ClientSendPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.sendpoint.usecase'
 import { ClientUpdatePointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
+import { ClientGetPointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.getpointname.usecase'
 import { ClientGetMemberPointHistory } from '../../../domain/LoyaltyCore/UseCase/Point/client.getmemberpointhistory.usecase'
 import { ClientGetAccumulatedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getaccumulatedreport.usecase'
 import { ClientGetRedeemedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getredeemedreport.usecase'
@@ -31,6 +32,18 @@ export class PointController {
   	} catch (error) {
   		reply.sendError(error)
   	}
+  }
+
+  @Get({ url: '/name' })
+  async getPointName (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
+    try {
+      const configRepo = new ConfigRepository ()
+      const useCase = new ClientGetPointNameUseCase (configRepo)
+      const { Name, Abbr } = await useCase.execute ()
+      reply.sendOk({ Name, Abbr })
+    } catch (error) {
+      reply.sendError(error)
+    }
   }
 
   @Post({ url: '/send' })
