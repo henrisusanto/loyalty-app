@@ -8,6 +8,7 @@ import { ClientUpdateMemberProfileUseCase } from '../../../domain/LoyaltyCore/Us
 import { ClientEnableMemberUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.enablemember.usecase'
 import { ClientDisableMemberUseCase } from '../../../domain/LoyaltyCore/UseCase/Member/client.disablemember.usecase'
 import { MemberRepository } from '../../../repositories/member.repository'
+import { TierRepository } from '../../../repositories/tier.repository'
 
 @Controller({ prefix: 'api/member' })
 export class MemberController {
@@ -36,7 +37,8 @@ export class MemberController {
   	try {
 	  	const payload = request.query
 	  	const memberRepo = new MemberRepository()
-	  	const useCase = new ClientGetMemberListUseCase (memberRepo)
+		const tierRepo = new TierRepository ()
+		const useCase = new ClientGetMemberListUseCase (memberRepo, tierRepo)
 	  	const result = await useCase.execute(
 		    payload.record_per_page,
 		    payload.current_page,
@@ -54,8 +56,9 @@ export class MemberController {
   async profile (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
   	try {
 		  const id:number = request.params.id
-	  	const memberRepo = new MemberRepository()
-	  	const useCase = new ClientGetMemberProfileUseCase (memberRepo)
+		  const memberRepo = new MemberRepository()
+		  const tierRepo = new TierRepository ()
+	  	const useCase = new ClientGetMemberProfileUseCase (memberRepo, tierRepo)
 	  	const result = await useCase.execute(id)
 	    reply.sendOk(result)
   	} catch (error) {
