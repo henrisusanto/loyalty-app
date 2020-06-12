@@ -168,6 +168,25 @@ export class PointRepository implements PointRepositoryInterface {
 		})
 	}
 
+	public async delete (Id: number): Promise <boolean> {
+		try {
+			await this.repo.delete (Id)
+			return true
+		} catch (e) {
+			throw new Error (e)
+		}
+	}
+
+	public async findByReference (data: {Reference: number, Activity: string}): Promise <PointEntity> {
+		try {
+			let found = await this.repo.findOne ({where: data})
+			if (!found) throw new Error ('Point not found')
+			else return this.toDomain (found)
+		} catch (e) {
+			throw new Error (e)
+		}
+	}
+
 	private toDomain (data): PointEntity {
 		let domain = new PointEntity ()
 		domain.fromJSON ({
