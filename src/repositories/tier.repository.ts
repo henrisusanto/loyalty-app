@@ -36,6 +36,16 @@ export class TierRepository implements TierRepositoryInterface {
     return generated.id
   }
 
+  public async findById (Id: number): Promise <TierAggregateRoot> {
+    try {
+      let found = await this.repository.findOne (Id)
+      if (!found) throw new Error ('Tier not found')
+      else return this.toDomain (found, [])
+    } catch (e) {
+      throw new Error (e)
+    }
+  }
+
   public async findByYear (year: number): Promise <TierAggregateRoot[]> {
     const { tiers, qualifications } = await this.findRecordsByYear (year)
     let Tiers: TierAggregateRoot[] = []
