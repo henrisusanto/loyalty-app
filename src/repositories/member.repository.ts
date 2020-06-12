@@ -84,6 +84,7 @@ export class MemberRepository implements MemberRepositoryInterface {
           .getRawMany()
 
         return members.map (member => {
+            member.Status = 1 === member.Status
             return this.toDomain (member)
         })
     }
