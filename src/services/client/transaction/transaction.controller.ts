@@ -4,7 +4,7 @@ import { Http2ServerResponse } from 'http2'
 
 import { PointRepository } from '../../../repositories/point.repository'
 import { MemberRepository } from '../../../repositories/member.repository'
-import { ActivityRateRepository } from '../../../repositories/activityrate.repository'
+import { PointTypeRepository } from '../../../repositories/pointtype.repository'
 import { TransactionRepository } from '../../../repositories/transaction.repository'
 
 import { ClientCancelTransactionUsecase } from '../../../domain/Transaction/Usecase/client.canceltransaction.usecase'
@@ -24,7 +24,7 @@ export class TransactionController {
       const TrxRepo = new TransactionRepository ()
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const RateRepo = new ActivityRateRepository ()
+      const RateRepo = new PointTypeRepository ()
       const useCase = new ClientSubmitTransactionUsecase (MemberRepo, PointRepo, RateRepo, TrxRepo)
       reply.sendOk (await useCase.execute (Member, TrxId, Spending))
     } catch (error) {
@@ -39,7 +39,7 @@ export class TransactionController {
         const TrxRepo = new TransactionRepository ()
         const PointRepo = new PointRepository ()
         const MemberRepo = new MemberRepository ()
-        const RateRepo = new ActivityRateRepository ()
+        const RateRepo = new PointTypeRepository ()
         const useCase = new ClientCancelTransactionUsecase (MemberRepo, PointRepo, RateRepo, TrxRepo)
         reply.sendOk (await useCase.execute (Id))
     } catch (error) {
