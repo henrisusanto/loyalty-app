@@ -1,34 +1,34 @@
 'use strict'
-import { ActivityRate } from '../entities/activityrate.entity'
-import { ActivityRateRepositoryInterface } from '../domain/LoyaltyCore/RepositoryInterface/activityrate.repositoryinterface'
-import { ActivityRateEntity, ActivityRateJSON } from '../domain/LoyaltyCore/Entity/activityrate.entity'
+import { PointType } from '../entities/pointtype.entity'
+import { PointTypeRepositoryInterface } from '../domain/LoyaltyCore/RepositoryInterface/pointtype.repositoryinterface'
+import { PointTypeEntity, PointTypeJSON } from '../domain/LoyaltyCore/Entity/pointtype.entity'
 const typeorm = require('typeorm')
 
-interface ActivityRateRecord {
+interface PointTypeRecord {
     Code: string
     Description: string
     Rate: number
     ExpiredMonth: number
 }
 
-export class ActivityRateRepository implements ActivityRateRepositoryInterface {
+export class PointTypeRepository implements PointTypeRepositoryInterface {
 
     protected conn
     protected repo
 
     constructor () {
         this.conn = typeorm.getConnection ()
-        this.repo = this.conn.getRepository (ActivityRate)
+        this.repo = this.conn.getRepository (PointType)
     }
 
-    public async getAll (): Promise <ActivityRateEntity []> {
+    public async getAll (): Promise <PointTypeEntity []> {
         let records = await this.repo.find ()
         return records.map (record => {
             return this.toDomain (record)
         })
     }
 
-    public async findByCode (Code: string): Promise <ActivityRateEntity> {
+    public async findByCode (Code: string): Promise <PointTypeEntity> {
         try {
             let record = await this.repo.findOne ({where: {Code}})
             if (!record) throw new Error ('Rate not found')
@@ -38,13 +38,13 @@ export class ActivityRateRepository implements ActivityRateRepositoryInterface {
         }
     }
 
-    public async update (data: ActivityRateEntity): Promise <string> {
+    public async update (data: PointTypeEntity): Promise <string> {
         let saved = await this.repo.save (this.toPersistence (data))
         return saved.Code
     }
 
-    private toDomain (data: ActivityRateRecord): ActivityRateEntity {
-        let activityRateE = new ActivityRateEntity ()
+    private toDomain (data: PointTypeRecord): PointTypeEntity {
+        let activityRateE = new PointTypeEntity ()
         activityRateE.fromJSON ({
             Code: data.Code,
             Description: data.Description,
@@ -54,7 +54,7 @@ export class ActivityRateRepository implements ActivityRateRepositoryInterface {
         return activityRateE
     }
 
-    private toPersistence (data: ActivityRateEntity): ActivityRateRecord {
+    private toPersistence (data: PointTypeEntity): PointTypeRecord {
         let activityRateJSON = data.toJSON ()
         return {
             Code: activityRateJSON.Code,

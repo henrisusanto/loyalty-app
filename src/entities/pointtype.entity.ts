@@ -2,7 +2,7 @@ import { Entity, PrimaryColumn, Column, CreateDateColumn, UpdateDateColumn, Inde
 
 @Entity()
 @Index(['Code'])
-export class ActivityRate {
+export class PointType {
 
     @PrimaryColumn()
     Code: string;
