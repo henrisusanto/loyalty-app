@@ -6,7 +6,7 @@ import { ManualPointRepository } from '../../../repositories/manualpoint.reposit
 import { PointRepository } from '../../../repositories/point.repository'
 import { MemberRepository } from '../../../repositories/member.repository'
 import { ConfigRepository } from '../../../repositories/config.repository'
-import { ActivityRateRepository } from '../../../repositories/activityrate.repository'
+import { PointTypeRepository } from '../../../repositories/pointtype.repository'
 
 import { ClientSendPointUsecase } from '../../../domain/LoyaltyCore/UseCase/Point/client.sendpoint.usecase'
 import { ClientUpdatePointNameUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointname.usecase'
@@ -15,8 +15,8 @@ import { ClientGetMemberPointHistory } from '../../../domain/LoyaltyCore/UseCase
 import { ClientGetAccumulatedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getaccumulatedreport.usecase'
 import { ClientGetRedeemedReport } from '../../../domain/LoyaltyCore/UseCase/Point/client.getredeemedreport.usecase'
 import { SchedulerExpirePoints } from '../../../domain/LoyaltyCore/UseCase/Point/scheduler.expirepoint.usecase'
-import { ClientGetActivityRateUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.getactivityrate.usecase'
-import { ClientUpdateActivityRateUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updateactivityrate.usecase'
+import { ClientGetPointTypeUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.getpointtype.usecase'
+import { ClientUpdatePointTypeUseCase } from '../../../domain/LoyaltyCore/UseCase/Point/client.updatepointtype.usecase'
 
 @Controller({ prefix: 'api/point' })
 export class PointController {
@@ -53,7 +53,7 @@ export class PointController {
       const ManualRepo = new ManualPointRepository ()
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const RateRepo = new ActivityRateRepository ()
+      const RateRepo = new PointTypeRepository ()
       const useCase = new ClientSendPointUsecase (
         ManualRepo,
         MemberRepo,
@@ -71,7 +71,7 @@ export class PointController {
     try {
       const member:number = request.params.member
       const repository = new PointRepository ()
-      const rateRepo = new ActivityRateRepository ()
+      const rateRepo = new PointTypeRepository ()
       const useCase = new ClientGetMemberPointHistory (repository, rateRepo)
       const result = await useCase.execute(member)
       reply.sendOk(result)
@@ -85,7 +85,7 @@ export class PointController {
     try {
       const { record_per_page, current_page, since, until } = request.query
       const repository = new PointRepository ()
-      const rateRepo = new ActivityRateRepository ()
+      const rateRepo = new PointTypeRepository ()
       const memberRepo = new MemberRepository ()
       const useCase = new ClientGetAccumulatedReport (repository, rateRepo, memberRepo)
       const result = await useCase.execute( record_per_page, current_page, since, until )
@@ -100,7 +100,7 @@ export class PointController {
     try {
       const { record_per_page, current_page, since, until } = request.query
       const repository = new PointRepository ()
-      const rateRepo = new ActivityRateRepository ()
+      const rateRepo = new PointTypeRepository ()
       const memberRepo = new MemberRepository ()
       const useCase = new ClientGetRedeemedReport (repository, rateRepo, memberRepo)
       const result = await useCase.execute( record_per_page, current_page, since, until )
@@ -116,7 +116,7 @@ export class PointController {
       const limit = request.params.limit
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const RateRepo = new ActivityRateRepository ()
+      const RateRepo = new PointTypeRepository ()
       const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo, RateRepo)
       reply.sendOk (await useCase.execute (limit))
     } catch (error) {
@@ -127,8 +127,8 @@ export class PointController {
   @Get({ url: '/rate' })
   async getRate (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
     try {
-      const repository = new ActivityRateRepository ()
-      const useCase = new ClientGetActivityRateUseCase (repository)
+      const repository = new PointTypeRepository ()
+      const useCase = new ClientGetPointTypeUseCase (repository)
       const result = await useCase.execute()
       reply.sendOk(result)
     } catch (error) {
@@ -140,8 +140,8 @@ export class PointController {
   async setRate (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
     try {
       const rates = JSON.parse (request.body)
-      const repository = new ActivityRateRepository ()
-      const useCase = new ClientUpdateActivityRateUseCase (repository)
+      const repository = new PointTypeRepository ()
+      const useCase = new ClientUpdatePointTypeUseCase (repository)
       const result = await useCase.execute(rates)
       reply.sendOk(result)
     } catch (error) {
