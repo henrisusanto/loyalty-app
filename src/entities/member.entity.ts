@@ -46,9 +46,9 @@ export class Member {
 	  @Column()
 	  YTDVisit?: number
 
-	  @Column()
+	  @Column({ type: 'bigint' })
 	  LifetimeSpending?: number
 
-	  @Column()
+	  @Column({ type: 'bigint' })
 	  YTDSpending?: number
 }
