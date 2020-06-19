@@ -53,12 +53,12 @@ export class PointController {
       const ManualRepo = new ManualPointRepository ()
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const RateRepo = new PointTypeRepository ()
+      const PointTypeRepo = new PointTypeRepository ()
       const useCase = new ClientSendPointUsecase (
         ManualRepo,
         MemberRepo,
         PointRepo,
-        RateRepo
+        PointTypeRepo
       )
       reply.sendOk (await useCase.execute (Member, YTD, Lifetime, LifetimeDateIn, Remarks))
     } catch (error) {
@@ -116,8 +116,8 @@ export class PointController {
       const limit = request.params.limit
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const RateRepo = new PointTypeRepository ()
-      const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo, RateRepo)
+      const PointTypeRepo = new PointTypeRepository ()
+      const useCase = new SchedulerExpirePoints (PointRepo, MemberRepo, PointTypeRepo)
       reply.sendOk (await useCase.execute (limit))
     } catch (error) {
       reply.sendError(error)
