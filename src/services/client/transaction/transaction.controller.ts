@@ -24,8 +24,8 @@ export class TransactionController {
       const TrxRepo = new TransactionRepository ()
       const PointRepo = new PointRepository ()
       const MemberRepo = new MemberRepository ()
-      const RateRepo = new PointTypeRepository ()
-      const useCase = new ClientSubmitTransactionUsecase (MemberRepo, PointRepo, RateRepo, TrxRepo)
+      const PointTypeRepo = new PointTypeRepository ()
+      const useCase = new ClientSubmitTransactionUsecase (MemberRepo, PointRepo, PointTypeRepo, TrxRepo)
       reply.sendOk (await useCase.execute (Member, TrxId, Spending))
     } catch (error) {
       reply.sendError(error)
@@ -39,8 +39,8 @@ export class TransactionController {
         const TrxRepo = new TransactionRepository ()
         const PointRepo = new PointRepository ()
         const MemberRepo = new MemberRepository ()
-        const RateRepo = new PointTypeRepository ()
-        const useCase = new ClientCancelTransactionUsecase (MemberRepo, PointRepo, RateRepo, TrxRepo)
+        const PointTypeRepo = new PointTypeRepository ()
+        const useCase = new ClientCancelTransactionUsecase (MemberRepo, PointRepo, PointTypeRepo, TrxRepo)
         reply.sendOk (await useCase.execute (Id))
     } catch (error) {
       reply.sendError(error)
