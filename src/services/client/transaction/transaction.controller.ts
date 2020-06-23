@@ -12,6 +12,8 @@ import { ClientGetMemberTransactionHistoryUsecase } from '../../../domain/Transa
 import { ClientGetTransactionUsecase } from '../../../domain/Transaction/Usecase/client.gettransaction.usecase'
 import { ClientGetTransactionReportUsecase } from '../../../domain/Transaction/Usecase/client.gettransactionreport.usecase'
 import { ClientSubmitTransactionUsecase } from '../../../domain/Transaction/Usecase/client.submittransaction.usecase'
+import { memo } from 'react'
+import { Point } from '../../../entities/point.entity'
 
 
 @Controller({ prefix: 'api/transaction' })
@@ -78,9 +80,11 @@ export class TransactionController {
   async report (request: FastifyRequest, reply: FastifyReply<Http2ServerResponse>): Promise<void> {
     try {
       const { record_per_page, current_page, since, until } = request.query
-      const repository = new TransactionRepository ()
-      const memberRepo = new MemberRepository ()
-      const useCase = new ClientGetTransactionReportUsecase (repository, memberRepo)
+      const TrxRepo = new TransactionRepository ()
+      const PointRepo = new PointRepository ()
+      const MemberRepo = new MemberRepository ()
+      const PointTypeRepo = new PointTypeRepository ()
+      const useCase = new ClientGetTransactionReportUsecase (MemberRepo, PointRepo, PointTypeRepo, TrxRepo)
       const result = await useCase.execute (record_per_page, current_page, since, until)
       reply.sendOk(result)
     } catch (error) {
