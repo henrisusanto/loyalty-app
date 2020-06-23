@@ -187,6 +187,37 @@ export class PointRepository implements PointRepositoryInterface {
 		}
 	}
 
+	public async findByReferences (data: {Activity: string, References: number[]}): Promise <PointEntity[]> {
+		try {
+			let found = await this.repo
+				.createQueryBuilder('point')
+				.select('*')
+				.where (`Reference IN (${data.References.join(',')})`)
+				.andWhere (`Activity = '${data.Activity}'`)
+				.getRawMany() || []
+			return found.map(record => {
+				return this.toDomain (record)
+			})
+		} catch (e) {
+			throw new Error (e)
+		}
+	}
+
+	public async findByParents (Parents: number[]): Promise <PointEntity[]> {
+		try {
+			let found = await this.repo
+				.createQueryBuilder('point')
+				.select('*')
+				.where (`Parent IN (${Parents.join(',')})`)
+				.getRawMany() || []
+			return found.map(record => {
+				return this.toDomain (record)
+			})
+		} catch (e) {
+			throw new Error (e)
+		}
+	}
+
 	private toDomain (data): PointEntity {
 		let domain = new PointEntity ()
 		domain.fromJSON ({

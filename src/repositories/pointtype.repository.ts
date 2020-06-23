@@ -38,6 +38,21 @@ export class PointTypeRepository implements PointTypeRepositoryInterface {
         }
     }
 
+    public async findByCodes (Codes: string[]): Promise <PointTypeEntity[]> {
+		try {
+			let found = await this.repo
+				.createQueryBuilder('point_type')
+				.select('*')
+				.where (`Code IN ("${Codes.join('","')}")`)
+				.getRawMany() || []
+			return found.map(record => {
+				return this.toDomain (record)
+			})
+		} catch (e) {
+			throw new Error (e)
+		}
+    }
+
     public async update (data: PointTypeEntity): Promise <string> {
         let saved = await this.repo.save (this.toPersistence (data))
         return saved.Code
